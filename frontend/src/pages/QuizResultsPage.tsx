@@ -98,7 +98,9 @@ export function QuizResultsPage() {
         : 'text-alt-success'
       : 'text-alt-error'
 
-  const taken = new Date(session.startedAt).toLocaleDateString(undefined, {
+  const completedOn = new Date(
+    session.completedAt ?? session.startedAt,
+  ).toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -118,14 +120,9 @@ export function QuizResultsPage() {
       <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-alt-text">
-            Assessment results
+            Result Disection
           </h1>
-          <p className="mt-1 font-mono text-xs uppercase tracking-wide text-alt-muted">
-            Result disection
-          </p>
-          <p className="mt-2 text-sm text-alt-muted">
-            Session summary · Completed {taken}
-          </p>
+          <p className="mt-2 text-sm text-alt-muted">Completed {completedOn}</p>
         </div>
         <Link
           to="/review?deckId=deck-remediation"

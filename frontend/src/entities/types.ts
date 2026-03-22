@@ -40,8 +40,11 @@ export type QuizQuestion = {
 
 export type Forecast14Bar = {
   label: string
+  /** Fallback height (0–100) when `cardCount` / tooltip cannot be parsed. */
   heightPct: number
   tooltip: string
+  /** If set, bar height = (cardCount / chart max) × 100%. */
+  cardCount?: number
   error?: boolean
 }
 

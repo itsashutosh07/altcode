@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { DEMO_EMAIL } from '@/app/auth/constants'
 import type { ThemePreference } from '@/app/theme/ThemeContext'
 import { useTheme } from '@/app/theme/ThemeContext'
@@ -88,12 +87,6 @@ export function SettingsPage() {
           </li>
         </ul>
       </div>
-      <p className="text-sm text-alt-muted">
-        Use <strong className="text-alt-text">Log out</strong> in the header.{' '}
-        <Link to="/dashboard" className="text-alt-primary underline">
-          Dashboard
-        </Link>
-      </p>
     </div>
   )
 }

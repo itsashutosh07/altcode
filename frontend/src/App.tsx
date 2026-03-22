@@ -6,6 +6,7 @@ import { LiveWebGLBackground } from '@/app/background/LiveWebGLBackground'
 import { ThemeProvider } from '@/app/theme/ThemeContext'
 import { AppShell } from '@/app/layout/AppShell'
 import { AnalyticsPage } from '@/pages/AnalyticsPage'
+import { AppHomePage } from '@/pages/AppHomePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/login/verify" element={<OtpPage />} />
 
             <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+              <Route path="home" element={<AppHomePage />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="topics" element={<TopicsPage />} />
               <Route path="topics/:topicId" element={<TopicDetailPage />} />

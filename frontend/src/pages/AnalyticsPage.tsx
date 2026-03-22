@@ -3,6 +3,31 @@ import { useTheme } from '@/app/theme/ThemeContext'
 import { staticAnalyticsRepository } from '@/data/repositories/staticRepositories'
 import { cn } from '@/shared/lib/cn'
 
+/** Y-axis max for 14-day forecast bars (must match tick labels). */
+const FORECAST_CHART_MAX_CARDS = 150
+
+/** Plot band height — bars align to 0 baseline; labels sit in a separate row below. */
+const forecastPlotClass = 'h-[204px]'
+
+function parseCardCountFromTooltip(tooltip: string): number | null {
+  const m = tooltip.trim().match(/^(\d+)\s+cards?$/i)
+  return m ? Number(m[1]) : null
+}
+
+function forecastBarHeightPct(bar: {
+  heightPct: number
+  tooltip: string
+  cardCount?: number
+  error?: boolean
+}): number {
+  if (bar.error) return Math.min(100, Math.max(3, bar.heightPct))
+  const count = bar.cardCount ?? parseCardCountFromTooltip(bar.tooltip)
+  if (count != null && Number.isFinite(count)) {
+    return Math.min(100, Math.max(0, (count / FORECAST_CHART_MAX_CARDS) * 100))
+  }
+  return Math.min(100, Math.max(0, bar.heightPct))
+}
+
 function matrixIntensity(seed: number, week: number, day: number): number {
   const v = Math.sin(seed * 0.08 + week * 1.17 + day * 2.31)
   return Math.min(4, Math.max(0, Math.floor((v + 1) * 2.2)))
@@ -189,10 +214,10 @@ export function AnalyticsPage() {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
         <div
           className={cn(
-            'flex min-h-[400px] flex-col border border-alt-border bg-alt-surface p-5',
+            'flex flex-col border border-alt-border bg-alt-surface p-5',
             !isDark && 'rounded-alt shadow-brutal',
           )}
         >
@@ -210,54 +235,77 @@ export function AnalyticsPage() {
               [WORKLOAD_PROJECTION]
             </span>
           </div>
-          <div className="relative flex flex-1 flex-col">
-            <div className="absolute left-0 top-0 flex h-full w-8 flex-col justify-between border-r border-alt-border py-4 font-mono text-[10px] text-alt-muted">
-              <span>150</span>
-              <span>100</span>
-              <span>50</span>
-              <span>0</span>
-            </div>
-            <div className="pointer-events-none absolute left-8 right-0 top-0 flex h-full flex-col justify-between py-4">
-              {[0, 1, 2].map((i) => (
+          <div className="relative flex shrink-0 flex-col overflow-visible">
+            <div className={cn('relative flex', forecastPlotClass)}>
+              <div
+                className={cn(
+                  'flex w-8 shrink-0 flex-col justify-between border-r border-alt-border font-mono text-[10px] leading-none text-alt-text/80',
+                  forecastPlotClass,
+                )}
+              >
+                <span>150</span>
+                <span>100</span>
+                <span>50</span>
+                <span>0</span>
+              </div>
+              <div className={cn('relative min-h-0 min-w-0 flex-1', forecastPlotClass)}>
+                <div className="pointer-events-none absolute inset-0 flex flex-col justify-between">
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="w-full border-t border-dashed border-alt-border/70"
+                    />
+                  ))}
+                  <div className="w-full border-t border-alt-border" />
+                </div>
                 <div
-                  key={i}
-                  className="w-full border-t border-dashed border-alt-border opacity-50"
-                />
-              ))}
-              <div className="w-full border-t border-alt-border" />
+                  className={cn(
+                    'relative z-10 flex h-full items-end justify-between gap-0.5 pl-2 pr-1 sm:gap-1.5',
+                    forecastPlotClass,
+                  )}
+                >
+                  {s.forecast14.map((bar) => (
+                    <div
+                      key={bar.label}
+                      className="group relative flex h-full min-h-0 min-w-0 flex-1 flex-col justify-end"
+                    >
+                      <div
+                        className="pointer-events-none absolute bottom-full z-20 mb-1 whitespace-nowrap rounded border border-alt-border bg-alt-surface px-2 py-1 font-mono text-[10px] text-alt-text shadow-sm opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <span
+                          className={
+                            bar.error ? 'text-alt-error' : 'text-alt-primary'
+                          }
+                        >
+                          {bar.tooltip}
+                        </span>
+                      </div>
+                      <div
+                        className={cn(
+                          'w-full min-h-[3px] max-h-full shrink-0 rounded-t-sm transition-all',
+                          bar.error
+                            ? 'border border-alt-error bg-alt-error hover:shadow-[0_0_10px_rgba(255,0,122,0.35)]'
+                            : isDark
+                              ? 'bg-alt-primary shadow-[inset_0_-1px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_0_12px_rgba(0,255,65,0.45)]'
+                              : 'bg-alt-primary hover:brightness-95 hover:shadow-[0_4px_14px_-4px_rgba(196,92,62,0.55)]',
+                        )}
+                        style={{ height: `${forecastBarHeightPct(bar)}%` }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="relative z-10 ml-8 flex flex-1 items-end justify-between gap-1 pl-2 pr-1 pt-4 sm:gap-2">
+            <div className="ml-8 flex justify-between gap-0.5 pl-2 pr-1 pt-2 sm:gap-1.5">
               {s.forecast14.map((bar) => (
                 <div
                   key={bar.label}
-                  className="group relative flex h-full w-full flex-col items-center justify-end"
+                  className={cn(
+                    'min-w-0 flex-1 px-0.5 text-center font-mono text-[9px] font-semibold leading-tight text-alt-text sm:text-[10px]',
+                    bar.error && 'text-alt-error',
+                  )}
                 >
-                  <div
-                    className="pointer-events-none absolute bottom-full mb-1 whitespace-nowrap rounded border border-alt-border bg-alt-bg px-2 py-1 font-mono text-[10px] text-alt-primary opacity-0 transition-opacity group-hover:opacity-100"
-                  >
-                    {bar.tooltip}
-                  </div>
-                  <div
-                    className={cn(
-                      'chart-bar w-full rounded-t-sm transition-all hover:opacity-100',
-                      bar.error
-                        ? 'border border-alt-error bg-alt-error/80 hover:shadow-[0_0_8px_rgba(255,0,122,0.4)]'
-                        : cn(
-                            'bg-alt-primary/60 hover:shadow-[0_0_8px_rgba(0,255,65,0.4)]',
-                            isDark && 'opacity-80 group-hover:opacity-100',
-                          ),
-                    )}
-                    style={{ height: `${bar.heightPct}%` }}
-                  />
-                  <div
-                    className={cn(
-                      'mt-2 origin-left text-[9px] sm:rotate-0',
-                      bar.error ? 'text-alt-error' : 'text-alt-muted',
-                      'rotate-45 sm:rotate-0',
-                    )}
-                  >
-                    {bar.label}
-                  </div>
+                  {bar.label}
                 </div>
               ))}
             </div>
@@ -385,10 +433,7 @@ export function AnalyticsPage() {
         </div>
       </section>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-alt-border pt-6">
-        <p className="text-sm text-alt-muted">
-          Plan reviews from the dashboard daily objective (PRD §8.4).
-        </p>
+      <div className="flex flex-wrap items-center justify-end gap-4 border-t border-alt-border pt-6">
         <Link to="/dashboard#daily" className="alt-btn-secondary text-sm">
           Schedule review →
         </Link>

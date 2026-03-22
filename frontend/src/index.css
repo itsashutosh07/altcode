@@ -142,6 +142,48 @@
   }
 }
 
+/*
+ * App shell — React Bits–style staggered menu
+ * https://reactbits.dev/components/staggered-menu?position=left
+ */
+.alt-stagger-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.65rem;
+}
+
+.alt-stagger-nav__item {
+  --alt-s: 0;
+  padding-left: 0;
+  text-align: left;
+  font-weight: 200;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translate3d(-32px, 32px, 0);
+}
+
+.alt-stagger-nav--open .alt-stagger-nav__item {
+  animation: alt-stagger-nav-item 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--alt-s) * 0.07s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alt-stagger-nav__item {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+@keyframes alt-stagger-nav-item {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 /* Angled hero / summary (light only, PRD) */
 .angled-panel {
   clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
