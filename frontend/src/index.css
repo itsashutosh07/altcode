@@ -193,6 +193,11 @@
   clip-path: none;
 }
 
+/* Landing “What you get” — angled cut in both themes */
+.landing-angled-panel {
+  clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
+}
+
 @layer components {
   .alt-card {
     @apply border bg-alt-surface transition-colors;

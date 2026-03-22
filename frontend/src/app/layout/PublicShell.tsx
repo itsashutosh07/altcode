@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useNavigate,
+} from "react-router-dom";
+import type { SignInLocationState } from "@/app/auth/signInNudge";
 import { useAuth } from "@/app/auth/AuthContext";
 import { useSearchOverlay } from "@/app/context/SearchContext";
 import { useTheme } from "@/app/theme/ThemeContext";
 import { SearchOverlay } from "@/features/search/SearchOverlay";
-import { staticAnalyticsRepository } from "@/data/repositories/staticRepositories";
 import { AltCodeLogo } from "@/shared/brand/AltCodeLogo";
 import { TextPressureBrand } from "@/shared/brand/TextPressureBrand";
 import { cn } from "@/shared/lib/cn";
@@ -22,16 +27,11 @@ function staggerMenuLinkClass(isActive: boolean) {
   );
 }
 
-export function AppShell() {
-  const { logout } = useAuth();
+export function PublicShell() {
+  const { isAuthenticated, logout } = useAuth();
   const { theme, preference, toggleTheme } = useTheme();
   const { openSearch, open } = useSearchOverlay();
   const navigate = useNavigate();
-  const { progression } = staticAnalyticsRepository.getSummary();
-  const xpPct =
-    progression.xpNextLevel > 0
-      ? Math.min(100, (progression.xp / progression.xpNextLevel) * 100)
-      : 0;
 
   const [isMd, setIsMd] = useState(() =>
     typeof window !== "undefined"
@@ -104,6 +104,24 @@ export function AppShell() {
     return () => window.removeEventListener("keydown", onKey);
   }, [openSearch]);
 
+  type DrawerRow = {
+    kind: "nav";
+    to: string;
+    label: string;
+    end?: boolean;
+  };
+
+  const drawerRows: DrawerRow[] = isAuthenticated
+    ? AUTH_DRAWER_ITEMS.map((item) => ({
+        kind: "nav" as const,
+        to: item.to,
+        label: item.label,
+        end: item.end,
+      }))
+    : [];
+
+  const actionsStartIndex = drawerRows.length;
+
   return (
     <div className="relative z-10 flex min-h-dvh w-full flex-col">
       <header className={shellHeaderClass(theme)}>
@@ -112,7 +130,7 @@ export function AppShell() {
           className="flex items-center justify-center rounded-alt border border-alt-border p-2 text-alt-text hover:border-alt-primary"
           onClick={toggleSidebar}
           aria-expanded={sidebarOpen}
-          aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+          aria-label={sidebarOpen ? "Collapse menu" : "Expand menu"}
         >
           <HamburgerIcon sidebarExpanded={sidebarOpen} />
         </button>
@@ -128,25 +146,7 @@ export function AppShell() {
           />
           <TextPressureBrand theme={theme} minFontSize={28} />
         </NavLink>
-        <div
-          className="hidden min-w-0 flex-1 items-center justify-center gap-3 px-2 md:flex"
-          title={`${progression.xp} / ${progression.xpNextLevel} XP`}
-        >
-          <span
-            className={cn(
-              "shrink-0 text-xs text-alt-muted",
-              theme === "dark" && "font-mono uppercase",
-            )}
-          >
-            Lv {progression.level} · {progression.title}
-          </span>
-          <div className="h-1.5 w-28 max-w-[30vw] overflow-hidden rounded-full bg-alt-border">
-            <div
-              className="h-full rounded-full bg-alt-cyan transition-all dark:bg-alt-primary"
-              style={{ width: `${xpPct}%` }}
-            />
-          </div>
-        </div>
+        <div className="hidden min-w-0 flex-1 md:block" aria-hidden />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2 md:flex-initial">
           <button
             type="button"
@@ -160,16 +160,31 @@ export function AppShell() {
           >
             {theme === "dark" ? "Light" : "Dark"}
           </button>
-          <button
-            type="button"
-            className="rounded-alt border border-alt-border px-3 py-1 text-sm text-alt-text hover:border-alt-error hover:text-alt-error"
-            onClick={() => {
-              logout();
-              navigate("/");
-            }}
-          >
-            Log out
-          </button>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              className="rounded-alt border border-alt-border px-3 py-1 text-sm text-alt-text hover:border-alt-error hover:text-alt-error"
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              state={
+                {
+                  signInHint:
+                    "Sign in to unlock quizzes, flashcards, topics, and analytics.",
+                } satisfies SignInLocationState
+              }
+              className="rounded-alt border border-alt-border px-3 py-1 text-xs font-semibold text-alt-primary hover:border-alt-primary"
+            >
+              Sign in
+            </Link>
+          )}
         </div>
       </header>
 
@@ -203,47 +218,71 @@ export function AppShell() {
                 "dark:border-alt-border dark:bg-[#0c0c0e] dark:shadow-[8px_16px_48px_-8px_rgba(0,0,0,0.65)]",
               )}
             >
-              <nav
-                className={cn(
-                  "alt-stagger-nav min-h-0 flex-1",
-                  staggerNavOpen && "alt-stagger-nav--open",
-                )}
-                aria-label="Main navigation"
-              >
-                {AUTH_DRAWER_ITEMS.map((item, i) => (
-                  <div
-                    key={item.to}
-                    className="alt-stagger-nav__item"
-                    style={{ "--alt-s": i } as CSSProperties}
-                  >
-                    <NavLink
-                      to={item.to}
-                      end={item.end}
-                      className={({ isActive }) =>
-                        cn(
-                          "group relative pr-2",
-                          staggerMenuLinkClass(isActive),
-                        )
+              {!isAuthenticated && drawerRows.length === 0 ? (
+                <div className="min-h-0 flex-1 px-1 pt-1">
+                  <p className="text-sm leading-relaxed text-alt-muted">
+                    The full menu appears after you sign in. Use{" "}
+                    <Link
+                      to="/login"
+                      state={
+                        {
+                          signInHint:
+                            "Sign in to unlock the full workspace and rail menu.",
+                        } satisfies SignInLocationState
                       }
-                      onClick={() => {
-                        if (!isMd) persistSidebar(false);
-                      }}
+                      className="font-medium text-alt-primary underline-offset-2 hover:underline"
                     >
-                      <span className="flex flex-wrap items-start justify-between gap-0">
-                        <span className="text-left">{item.label}</span>
-                        <sup
-                          className={cn(
-                            "mt-1 shrink-0 align-top text-[0.72rem] font-bold leading-none text-alt-primary",
-                            "opacity-90 transition-opacity group-hover:opacity-100",
-                          )}
-                        >
-                          {String(i + 1).padStart(2, "0")}
-                        </sup>
-                      </span>
-                    </NavLink>
-                  </div>
-                ))}
-              </nav>
+                      Sign in
+                    </Link>{" "}
+                    (top right) or any app shortcut on the page — you’ll see a
+                    reminder and go to login. Click the{" "}
+                    <span className="text-alt-text">AltCode</span> title anytime
+                    to return to this overview.
+                  </p>
+                </div>
+              ) : (
+                <nav
+                  className={cn(
+                    "alt-stagger-nav min-h-0 flex-1",
+                    staggerNavOpen && "alt-stagger-nav--open",
+                  )}
+                  aria-label="Site navigation"
+                >
+                  {drawerRows.map((row, i) => (
+                    <div
+                      key={`${row.to}-${row.label}-${i}`}
+                      className="alt-stagger-nav__item"
+                      style={{ "--alt-s": i } as CSSProperties}
+                    >
+                      <NavLink
+                        to={row.to}
+                        end={row.end ?? false}
+                        className={({ isActive }) =>
+                          cn(
+                            "group relative pr-2",
+                            staggerMenuLinkClass(isActive),
+                          )
+                        }
+                        onClick={() => {
+                          if (!isMd) persistSidebar(false);
+                        }}
+                      >
+                        <span className="flex flex-wrap items-start justify-between gap-0">
+                          <span className="text-left">{row.label}</span>
+                          <sup
+                            className={cn(
+                              "mt-1 shrink-0 align-top text-[0.72rem] font-bold leading-none text-alt-primary",
+                              "opacity-90 transition-opacity group-hover:opacity-100",
+                            )}
+                          >
+                            {String(i + 1).padStart(2, "0")}
+                          </sup>
+                        </span>
+                      </NavLink>
+                    </div>
+                  ))}
+                </nav>
+              )}
               <div
                 className={cn(
                   "alt-stagger-nav border-t border-alt-border/35 pt-7 dark:border-alt-border/50",
@@ -252,18 +291,14 @@ export function AppShell() {
               >
                 <p
                   className="alt-stagger-nav__item mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-alt-primary"
-                  style={
-                    { "--alt-s": AUTH_DRAWER_ITEMS.length } as CSSProperties
-                  }
+                  style={{ "--alt-s": actionsStartIndex } as CSSProperties}
                 >
                   Actions
                 </p>
                 <div
                   className="alt-stagger-nav__item flex w-full flex-wrap items-baseline justify-between gap-y-2 bg-transparent"
                   style={
-                    {
-                      "--alt-s": AUTH_DRAWER_ITEMS.length + 1,
-                    } as CSSProperties
+                    { "--alt-s": actionsStartIndex + 1 } as CSSProperties
                   }
                 >
                   <button

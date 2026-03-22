@@ -1,9 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/app/auth/AuthContext'
 import { DEMO_EMAIL } from '@/app/auth/constants'
+import type { SignInLocationState } from '@/app/auth/signInNudge'
 import { useTheme } from '@/app/theme/ThemeContext'
 import { cn } from '@/shared/lib/cn'
+
+const NUDGE_DISMISS_MS = 14_000
 
 export function LoginPage() {
   const { isAuthenticated, checkCredentials, markOtpPending, setReturnUrl } =
@@ -11,9 +14,12 @@ export function LoginPage() {
   const { theme } = useTheme()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [email, setEmail] = useState(DEMO_EMAIL)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const hint = (location.state as SignInLocationState | null)?.signInHint
+  const [nudgeVisible, setNudgeVisible] = useState(Boolean(hint))
 
   useEffect(() => {
     if (isAuthenticated) navigate('/dashboard', { replace: true })
@@ -23,6 +29,12 @@ export function LoginPage() {
     const r = searchParams.get('returnUrl')
     if (r && r.startsWith('/') && !r.startsWith('//')) setReturnUrl(r)
   }, [searchParams, setReturnUrl])
+
+  useEffect(() => {
+    if (!hint || !nudgeVisible) return
+    const t = window.setTimeout(() => setNudgeVisible(false), NUDGE_DISMISS_MS)
+    return () => window.clearTimeout(t)
+  }, [hint, nudgeVisible])
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -36,7 +48,37 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4">
+    <div className="relative flex min-h-dvh items-center justify-center px-4">
+      {nudgeVisible && hint ? (
+        <div
+          className={cn(
+            'fixed bottom-4 right-4 z-[60] max-w-sm transition-opacity duration-300',
+            'rounded-alt border p-4 text-sm shadow-lg',
+            theme === 'dark' &&
+              'border-alt-primary/40 bg-alt-surface/95 text-alt-text backdrop-blur-md',
+            theme === 'light' &&
+              'border-alt-border bg-alt-surface shadow-brutal',
+          )}
+          role="status"
+        >
+          <p className="leading-snug text-alt-text">{hint}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-alt border border-alt-primary px-3 py-1 text-xs font-semibold text-alt-primary hover:bg-alt-primary/10"
+              onClick={() => setNudgeVisible(false)}
+            >
+              Dismiss
+            </button>
+            <Link
+              to="/"
+              className="rounded-alt border border-alt-border px-3 py-1 text-xs font-medium text-alt-muted hover:border-alt-primary hover:text-alt-text"
+            >
+              Back to landing
+            </Link>
+          </div>
+        </div>
+      ) : null}
       <div
         className={cn(
           'relative z-10 w-full max-w-md border bg-alt-surface p-8 rounded-alt',
