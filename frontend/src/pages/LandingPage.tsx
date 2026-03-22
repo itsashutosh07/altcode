@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/app/auth/AuthContext'
+import { useTheme } from '@/app/theme/ThemeContext'
+import { cn } from '@/shared/lib/cn'
 
 export function LandingPage() {
   const { isAuthenticated } = useAuth()
+  const { theme } = useTheme()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -11,24 +14,46 @@ export function LandingPage() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="min-h-screen bg-slate-200 px-6 py-16">
-      <div className="mx-auto max-w-xl rounded-lg border-2 border-dashed border-slate-400 bg-white p-10">
-        <p className="font-mono text-xs uppercase text-slate-500">v0.1 prototype</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-900">AltCode</h1>
-        <p className="mt-4 text-slate-600">
-          Quiz and flashcards for interview prep. This build validates flows and
-          navigation only—visual themes come later.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            to="/login"
-            className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+    <div className="live-bg min-h-screen">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-6 py-16">
+        <div
+          className={cn(
+            'w-full max-w-xl border bg-alt-surface p-10 rounded-alt',
+            theme === 'dark' &&
+              'border-alt-border shadow-[0_0_40px_rgba(0,255,65,0.06)]',
+            theme === 'light' &&
+              'angled-panel border-2 border-alt-border shadow-brutal',
+          )}
+        >
+          <p
+            className={cn(
+              'text-alt-muted',
+              theme === 'dark' && 'font-mono text-xs uppercase tracking-widest',
+              theme === 'light' && 'text-xs font-semibold uppercase tracking-wide',
+            )}
           >
-            Log in
-          </Link>
-          <span className="self-center text-xs text-slate-500">
-            Use demo credentials after login screen
-          </span>
+            v0.2 prototype · dual theme
+          </p>
+          <h1
+            className={cn(
+              'mt-2 text-3xl font-bold text-alt-text',
+              theme === 'dark' && 'font-mono uppercase tracking-tight',
+            )}
+          >
+            AltCode
+          </h1>
+          <p className="mt-4 text-alt-muted">
+            Quiz and flashcards for interview prep. Toggle Light/Dark after sign-in
+            to preview both PRD themes.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link to="/login" className="alt-btn-primary">
+              Log in
+            </Link>
+            <span className="self-center font-mono text-xs text-alt-muted">
+              demo user + OTP in README
+            </span>
+          </div>
         </div>
       </div>
     </div>

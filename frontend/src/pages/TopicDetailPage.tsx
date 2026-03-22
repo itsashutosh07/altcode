@@ -1,15 +1,18 @@
 import { Link, useParams } from 'react-router-dom'
+import { useTheme } from '@/app/theme/ThemeContext'
 import { staticTopicRepository } from '@/data/repositories/staticRepositories'
+import { cn } from '@/shared/lib/cn'
 
 export function TopicDetailPage() {
+  const { theme } = useTheme()
   const { topicId } = useParams<{ topicId: string }>()
   const topic = topicId ? staticTopicRepository.getTopicById(topicId) : undefined
 
   if (!topic) {
     return (
       <div>
-        <p className="text-slate-600">Topic not found.</p>
-        <Link to="/topics" className="text-sm underline">
+        <p className="text-alt-muted">Topic not found.</p>
+        <Link to="/topics" className="text-sm text-alt-primary underline">
           Back to topics
         </Link>
       </div>
@@ -19,17 +22,22 @@ export function TopicDetailPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <Link to="/topics" className="text-sm text-slate-600 underline">
+        <Link to="/topics" className="text-sm text-alt-muted underline">
           ← Topics
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">{topic.title}</h1>
-        <p className="text-sm text-slate-500">{topic.category}</p>
-        <p className="mt-4 text-slate-700">{topic.description}</p>
+        <h1 className="alt-page-title mt-2">{topic.title}</h1>
+        <p className="text-sm text-alt-muted">{topic.category}</p>
+        <p className="mt-4 text-alt-text">{topic.description}</p>
       </div>
 
-      <div className="rounded border border-slate-300 bg-white p-4">
-        <h2 className="font-semibold text-slate-900">Outline</h2>
-        <ul className="mt-2 list-inside list-disc text-sm text-slate-600">
+      <div
+        className={cn(
+          'alt-card p-4',
+          theme === 'light' && 'angled-panel border-2',
+        )}
+      >
+        <h2 className="font-semibold text-alt-text">Outline</h2>
+        <ul className="mt-2 list-inside list-disc text-sm text-alt-muted">
           <li>Core concepts</li>
           <li>Practice cards ({topic.cardCount})</li>
           <li>Quizzes ({topic.quizCount})</li>
@@ -38,16 +46,16 @@ export function TopicDetailPage() {
 
       <div className="flex flex-wrap gap-3">
         <Link
-          to={`/review?deckId=${encodeURIComponent(topic.deckId)}`}
-          className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-        >
-          Start review
-        </Link>
-        <Link
           to={`/quiz/new?topicId=${encodeURIComponent(topic.id)}`}
-          className="rounded border border-slate-300 px-4 py-2 text-sm font-medium"
+          className="alt-btn-primary"
         >
           Start quiz
+        </Link>
+        <Link
+          to={`/review?deckId=${encodeURIComponent(topic.deckId)}`}
+          className="alt-btn-secondary"
+        >
+          Start review
         </Link>
       </div>
     </div>

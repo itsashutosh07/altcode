@@ -2,10 +2,13 @@ import { FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/app/auth/AuthContext'
 import { DEMO_EMAIL } from '@/app/auth/constants'
+import { useTheme } from '@/app/theme/ThemeContext'
+import { cn } from '@/shared/lib/cn'
 
 export function LoginPage() {
   const { isAuthenticated, checkCredentials, markOtpPending, setReturnUrl } =
     useAuth()
+  const { theme } = useTheme()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [email, setEmail] = useState(DEMO_EMAIL)
@@ -25,7 +28,7 @@ export function LoginPage() {
     e.preventDefault()
     setError('')
     if (!checkCredentials(email, password)) {
-      setError('Invalid email or password (v0.1: use plan credentials).')
+      setError('Invalid email or password.')
       return
     }
     markOtpPending()
@@ -33,51 +36,61 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-200 px-4">
-      <div className="w-full max-w-md rounded-lg border border-slate-300 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">Sign in</h1>
-        <p className="mt-1 text-sm text-slate-500">AltCode v0.1 — OTP step next</p>
+    <div className="live-bg flex min-h-screen items-center justify-center px-4">
+      <div
+        className={cn(
+          'relative z-10 w-full max-w-md border bg-alt-surface p-8 rounded-alt',
+          theme === 'dark' && 'border-alt-border',
+          theme === 'light' && 'border-2 border-alt-border shadow-brutal',
+        )}
+      >
+        <h1
+          className={cn(
+            'text-xl font-semibold text-alt-text',
+            theme === 'dark' && 'font-mono uppercase',
+          )}
+        >
+          Sign in
+        </h1>
+        <p className="mt-1 text-sm text-alt-muted">OTP on next step</p>
         <form className="mt-6 space-y-4" onSubmit={onSubmit}>
           <div>
-            <label className="text-sm font-medium text-slate-700" htmlFor="email">
+            <label className="text-sm font-medium text-alt-text" htmlFor="email">
               Email
             </label>
             <input
               id="email"
               type="email"
-              className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+              className="alt-input mt-1"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-700" htmlFor="pw">
+            <label className="text-sm font-medium text-alt-text" htmlFor="pw">
               Password
             </label>
             <input
               id="pw"
               type="password"
-              className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+              className="alt-input mt-1"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
           </div>
           {error ? (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-alt-error" role="alert">
               {error}
             </p>
           ) : null}
-          <button
-            type="submit"
-            className="w-full rounded bg-slate-900 py-2 text-sm font-medium text-white"
-          >
+          <button type="submit" className="alt-btn-primary w-full">
             Continue
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-slate-500">
-          <Link to="/" className="underline">
+        <p className="mt-4 text-center text-sm text-alt-muted">
+          <Link to="/" className="underline hover:text-alt-primary">
             Back to landing
           </Link>
         </p>

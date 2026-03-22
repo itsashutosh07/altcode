@@ -1,6 +1,6 @@
-# AltCode frontend — v0.1 prototype
+# AltCode frontend — v0.2 prototype
 
-Flow and navigation prototype (static JSON data, no API). Dual themes and visual polish are planned for v1.0 after PRD refresh.
+Static **dual-theme** prototype (Terminal / Dystopian dark + Earthy Brutalist light) with the same routes and flows as v0.1. Layout and components use PRD tokens (`src/index.css`, `tailwind.config.js`). Some actions remain stubbed; data is still JSON via repositories.
 
 ## Run
 
@@ -25,7 +25,7 @@ Open the printed local URL (usually `http://localhost:5173`).
 - `src/data/static/` — JSON content (replace with CMS/API later via repositories).
 - `src/data/repositories/` — static repository implementations.
 - `src/pages/` — route screens.
-- `src/app/` — auth, layout, search context.
+- `src/app/` — auth, layout, theme, search context.
 
 ## Requirements
 

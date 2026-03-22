@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useTheme } from '@/app/theme/ThemeContext'
 import type { StoredQuizSession } from '@/lib/quizSession'
 import { loadQuizSession, saveQuizSession } from '@/lib/quizSession'
 import { staticQuizRepository } from '@/data/repositories/staticRepositories'
+import { cn } from '@/shared/lib/cn'
 
 export function QuizActivePage() {
+  const { theme } = useTheme()
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const [tick, setTick] = useState(0)
@@ -37,8 +40,8 @@ export function QuizActivePage() {
   if (!sessionId || !session || questions.length === 0) {
     return (
       <div className="space-y-4">
-        <p className="text-slate-600">Missing or invalid quiz session.</p>
-        <Link to="/quiz/new" className="text-sm underline">
+        <p className="text-alt-muted">Missing or invalid quiz session.</p>
+        <Link to="/quiz/new" className="text-sm text-alt-primary underline">
           New quiz
         </Link>
       </div>
@@ -77,47 +80,62 @@ export function QuizActivePage() {
 
   const pct = totalSec > 0 ? (remaining / totalSec) * 100 : 0
 
+  const timerBarClass =
+    theme === 'dark'
+      ? 'bg-gradient-to-r from-alt-cyan to-alt-primary'
+      : 'bg-alt-primary'
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div
-        className="h-2 w-full overflow-hidden rounded bg-slate-200"
+        className={cn(
+          'h-2 w-full overflow-hidden rounded-alt bg-alt-border',
+          theme === 'dark' && 'ring-1 ring-alt-cyan/30',
+        )}
         title={`${remaining}s left`}
       >
         <div
-          className="h-full bg-amber-500 transition-all"
+          className={cn('h-full transition-all', timerBarClass)}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="flex justify-between text-sm text-slate-600">
-        <span>
+      <div className="flex justify-between text-sm text-alt-muted">
+        <span className={theme === 'dark' ? 'font-mono' : ''}>
           Q{qIndex + 1} / {questions.length}
         </span>
-        <span className="font-mono">
+        <span className="font-mono text-alt-cyan">{theme === 'dark' ? 'T-' : ''}
           {Math.floor(remaining / 60)}:
           {(remaining % 60).toString().padStart(2, '0')}
         </span>
       </div>
-      <div className="rounded border border-slate-300 bg-white p-6 shadow-sm">
-        <p className="text-lg text-slate-900">{q.prompt}</p>
-        {q.code ? (
-          <pre className="mt-4 overflow-x-auto rounded bg-slate-900 p-3 font-mono text-sm text-slate-100">
-            {q.code}
-          </pre>
-        ) : null}
+      <div
+        className={cn(
+          'alt-card p-6 shadow-none',
+          theme === 'dark' && 'border-alt-border shadow-[inset_0_0_0_1px_rgba(51,51,51,1)]',
+          theme === 'light' && 'shadow-brutal',
+        )}
+      >
+        <p className={cn('text-lg text-alt-text', theme === 'dark' && 'font-mono')}>
+          {q.prompt}
+        </p>
+        {q.code ? <pre className="alt-code-block mt-4">{q.code}</pre> : null}
       </div>
       <ul className="space-y-2">
         {q.options.map((opt, i) => (
           <li key={i}>
             <button
               type="button"
-              className={`w-full rounded border px-4 py-3 text-left text-sm ${
+              className={cn(
+                'w-full rounded-alt border px-4 py-3 text-left text-sm transition-colors',
                 selected === i
-                  ? 'border-slate-900 bg-slate-100'
-                  : 'border-slate-300 bg-white hover:bg-slate-50'
-              }`}
+                  ? theme === 'dark'
+                    ? 'border-alt-primary bg-alt-primary/10 text-alt-primary'
+                    : 'border-alt-primary bg-alt-surface-elevated text-alt-text shadow-brutal'
+                  : 'border-alt-border bg-alt-surface hover:border-alt-primary/60',
+              )}
               onClick={() => setSelected(i)}
             >
-              <span className="font-mono text-slate-500">{String.fromCharCode(65 + i)}.</span>{' '}
+              <span className="font-mono text-alt-muted">{String.fromCharCode(65 + i)}.</span>{' '}
               {opt}
             </button>
           </li>
@@ -126,7 +144,7 @@ export function QuizActivePage() {
       <button
         type="button"
         disabled={selected === null}
-        className="rounded bg-slate-900 px-6 py-2 text-sm font-medium text-white disabled:opacity-40"
+        className="alt-btn-primary disabled:pointer-events-none disabled:opacity-40"
         onClick={onNext}
       >
         {isLast ? 'Finish' : 'Next'}

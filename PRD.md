@@ -1,6 +1,6 @@
 # AltCode — Unified Product Requirements Document
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Product:** AltCode — Quiz + Flashcards for technical interview prep  
 **Platforms:** Web, desktop-first (responsive tablet/mobile)  
 **Themes:** Two persistent modes — **Dark: Terminal / Dystopian** and **Light: Earthy Minimal Brutalist**
@@ -38,8 +38,9 @@ AltCode is a single product with **one information architecture** and **one set 
 Delivery is staged so **flows and UX** are validated before final visual polish:
 
 1. **v0.1 prototype** — End-to-end **routes and major flows** (auth, dashboard, topics, flashcards, quiz, results) with **static data** and **wireframe-level UI** (single neutral styling is acceptable). Goal: validate buttons, navigation, and interaction model.
-2. **PRD refresh** — After UX is agreed, **update this document** (version bump, changelog note, resolved open decisions, finalized tokens/themes in section 5). The refreshed PRD becomes the single spec for visual work.
-3. **v1.0 frontend** — **Full dual-theme** implementation and polish per the **updated** PRD, still **frontend-only** and **static-file** data until a backend phase is scoped.
+2. **v0.2 prototype** — **Dual-theme visual prototype** (dark: Terminal / Dystopian, light: Earthy Brutalist per §5) so reviewers can judge **color, typography, and per-screen feel** in both modes. Screens are **statically laid out** per this PRD; not all behaviors need to work. **Information priority:** **Quiz before flashcards** in primary nav order, dashboard CTAs, and topic/deck action rows. **App shell:** **Hamburger control** in the header toggles the **left rail** open/closed (persisted preference). Reference implementation: `frontend/` (`data-theme` on `<html>`, CSS variables in `index.css`, shared `alt-*` utility classes).
+3. **PRD refresh** — After UX and theme direction are agreed, **update this document** (version bump, changelog note, resolved open decisions, finalized tokens/themes in section 5). The refreshed PRD remains the single spec for v1.0 visual work.
+4. **v1.0 frontend** — **Full dual-theme** implementation and polish per the **updated** PRD, still **frontend-only** and **static-file** data until a backend phase is scoped.
 
 ---
 
@@ -54,7 +55,8 @@ Delivery is staged so **flows and UX** are validated before final visual polish:
 
 ### 4.1 Global shell (all authenticated screens)
 
-- **Left rail (desktop):** Logo, Dashboard, Topics, Analytics, Settings. Active state theme-specific.
+- **Left rail:** Logo/brand, **Dashboard**, **Quiz**, **Flashcards** (routes to `/review` with the default daily session or documented query), **Topics**, **Analytics**, **Settings**. **Order reflects product priority: quiz first, then flashcards**, then the rest. Active state is theme-specific (see §5).
+- **Rail visibility:** A **hamburger** (or equivalent menu) control in the **header** **expands and collapses** the left rail. On narrow viewports the rail behaves as an overlay/drawer with a dismiss affordance (e.g. backdrop tap). Collapsed/expanded preference **SHOULD** persist across sessions (e.g. `localStorage`).
 - **Top utility:** Theme toggle (Dark ↔ Light), global search trigger, optional streak/level chip (see §6.3).
 - **Content:** Max-width reading column on doc-heavy pages; full-bleed allowed on Flashcard and Active Quiz.
 
@@ -433,5 +435,12 @@ Each screen lists: **Purpose**, **Layout**, **Key elements**, **States**, **Them
 4. Auth provider and whether **Screen J** ships in v1.
 
 ---
+
+### Document changelog
+
+| Version | Notes |
+|--------|--------|
+| 1.1 | Added **v0.2 prototype** to §2.3; §4.1 updated for **quiz-first** nav, **hamburger** + **collapsible left rail**, and persistence; aligns with static `frontend` v0.2 theme preview. |
+| 1.0 | Initial unified PRD. |
 
 *End of PRD — AltCode unified dual-theme specification.*

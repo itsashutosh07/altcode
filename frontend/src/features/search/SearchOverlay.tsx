@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSearchOverlay } from '@/app/context/SearchContext'
-import { staticDeckRepository } from '@/data/repositories/staticRepositories'
-import { staticTopicRepository } from '@/data/repositories/staticRepositories'
+import { useTheme } from '@/app/theme/ThemeContext'
+import {
+  staticDeckRepository,
+  staticTopicRepository,
+} from '@/data/repositories/staticRepositories'
+import { cn } from '@/shared/lib/cn'
 
 export function SearchOverlay() {
   const { closeSearch } = useSearchOverlay()
+  const { theme } = useTheme()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
 
@@ -35,39 +40,43 @@ export function SearchOverlay() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-24"
+      className="fixed inset-0 z-[100] flex items-start justify-center bg-black/50 pt-16 md:pt-24"
       role="dialog"
       aria-modal="true"
       aria-label="Search"
       onClick={closeSearch}
     >
       <div
-        className="w-full max-w-lg rounded-lg border border-slate-300 bg-white shadow-xl"
+        className={cn(
+          'w-full max-w-lg border bg-alt-surface shadow-2xl rounded-alt',
+          theme === 'dark' && 'border-alt-primary/40 shadow-[0_0_24px_rgba(0,255,65,0.08)]',
+          theme === 'light' && 'border-alt-border shadow-brutal',
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="border-b border-slate-200 p-3">
+        <div className="border-b border-alt-border p-3">
           <input
             autoFocus
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+            className="alt-input"
             placeholder="Search topics or decks…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
-          <p className="mt-1 text-xs text-slate-500">Esc to close</p>
+          <p className="mt-1 font-mono text-xs text-alt-muted">Esc — close</p>
         </div>
         <ul className="max-h-72 overflow-auto p-2 text-sm">
           {filtered.topics.map((t) => (
             <li key={t.id}>
               <button
                 type="button"
-                className="w-full rounded px-2 py-2 text-left hover:bg-slate-100"
+                className="w-full rounded-alt px-2 py-2 text-left text-alt-text hover:bg-alt-surface-elevated"
                 onClick={() => {
                   closeSearch()
                   navigate(`/topics/${t.id}`)
                 }}
               >
                 <span className="font-medium">{t.title}</span>
-                <span className="ml-2 text-slate-500">Topic</span>
+                <span className="ml-2 text-alt-muted">Topic</span>
               </button>
             </li>
           ))}
@@ -75,27 +84,27 @@ export function SearchOverlay() {
             <li key={d.id}>
               <button
                 type="button"
-                className="w-full rounded px-2 py-2 text-left hover:bg-slate-100"
+                className="w-full rounded-alt px-2 py-2 text-left text-alt-text hover:bg-alt-surface-elevated"
                 onClick={() => {
                   closeSearch()
                   navigate(`/review?deckId=${encodeURIComponent(d.id)}`)
                 }}
               >
                 <span className="font-medium">{d.title}</span>
-                <span className="ml-2 text-slate-500">Deck → Review</span>
+                <span className="ml-2 text-alt-muted">Deck → Review</span>
               </button>
             </li>
           ))}
           {filtered.topics.length === 0 && filtered.decks.length === 0 && (
-            <li className="px-2 py-4 text-center text-slate-500">
+            <li className="px-2 py-4 text-center text-alt-muted">
               {q.trim() ? 'No results' : 'No data'}
             </li>
           )}
         </ul>
-        <div className="border-t border-slate-200 p-2 text-right">
+        <div className="border-t border-alt-border p-2 text-right">
           <button
             type="button"
-            className="rounded px-3 py-1 text-sm text-slate-600 hover:bg-slate-100"
+            className="rounded-alt px-3 py-1 text-sm text-alt-muted hover:bg-alt-surface-elevated"
             onClick={closeSearch}
           >
             Close
