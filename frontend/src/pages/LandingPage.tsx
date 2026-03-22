@@ -11,6 +11,10 @@ import { cn } from "@/shared/lib/cn";
 const SHINY_HERO_COPY =
   "AltCode is a static v1 prototype for interview prep. Quizzes, flashcards, and topic navigation share one map so practice stays in one place. Demo OTP lives in the README; after sign-in, set themes in Settings, use the rail to move, and tap the header lockup to return here.";
 
+/** Same shine ramp in light and dark so the hero blurb doesn’t shift per theme. */
+const SHINY_HERO_BASE = "#6b7280";
+const SHINY_HERO_SHINE = "#e5e7eb";
+
 const PILLARS = [
   {
     to: "/quiz/new",
@@ -103,8 +107,8 @@ export function LandingPage() {
                 delay={0.45}
                 spread={125}
                 direction="left"
-                baseColor={theme === "light" ? "#78716c" : "#6b7280"}
-                shineColor={theme === "light" ? "#fafaf9" : "#e5e7eb"}
+                baseColor={SHINY_HERO_BASE}
+                shineColor={SHINY_HERO_SHINE}
               />
             </div>
 

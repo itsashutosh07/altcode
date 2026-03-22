@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, type KeyboardEvent, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/app/auth/AuthContext'
 import { DEMO_EMAIL } from '@/app/auth/constants'
@@ -47,8 +47,14 @@ export function LoginPage() {
     navigate('/login/verify')
   }
 
+  function onFieldEnter(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'Enter') return
+    e.preventDefault()
+    e.currentTarget.form?.requestSubmit()
+  }
+
   return (
-    <div className="relative flex min-h-dvh items-center justify-center px-4">
+    <div className="relative flex min-h-0 w-full flex-1 flex-col items-center justify-center px-4 py-6">
       {nudgeVisible && hint ? (
         <div
           className={cn(
@@ -106,6 +112,7 @@ export function LoginPage() {
               className="alt-input mt-1"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={onFieldEnter}
               autoComplete="username"
             />
           </div>
@@ -119,7 +126,9 @@ export function LoginPage() {
               className="alt-input mt-1"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={onFieldEnter}
               autoComplete="current-password"
+              autoFocus
             />
           </div>
           {error ? (

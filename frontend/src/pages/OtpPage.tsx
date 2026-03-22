@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, type KeyboardEvent, useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/app/auth/AuthContext'
 import { OTP_PENDING_KEY } from '@/app/auth/constants'
@@ -24,10 +24,9 @@ export function OtpPage() {
     return <Navigate to="/login" replace />
   }
 
-  function onSubmit(e: FormEvent) {
-    e.preventDefault()
+  function verifyAndNavigate(code: string) {
     setError('')
-    if (!verifyOtp(otp)) {
+    if (!verifyOtp(code)) {
       setError('Invalid OTP.')
       return
     }
@@ -36,8 +35,21 @@ export function OtpPage() {
     navigate(safe ? next : '/dashboard', { replace: true })
   }
 
+  function onSubmit(e: FormEvent) {
+    e.preventDefault()
+    verifyAndNavigate(otp)
+  }
+
+  function onOtpKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'Enter' && e.key !== 'NumpadEnter') return
+    if (e.nativeEvent.isComposing) return
+    e.preventDefault()
+    const code = e.currentTarget.value.replace(/\D/g, '').slice(0, 6)
+    verifyAndNavigate(code)
+  }
+
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4">
+    <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center px-4 py-6">
       <div
         className={cn(
           'relative z-10 w-full max-w-md border bg-alt-surface p-8 rounded-alt',
@@ -67,8 +79,10 @@ export function OtpPage() {
               onChange={(e) =>
                 setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))
               }
+              onKeyDown={onOtpKeyDown}
               placeholder="888888"
               autoComplete="one-time-code"
+              autoFocus
             />
           </div>
           {error ? (
