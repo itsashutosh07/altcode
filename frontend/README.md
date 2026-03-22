@@ -1,6 +1,6 @@
-# AltCode frontend — v0.2 prototype
+# AltCode frontend — v1.0
 
-Static **dual-theme** prototype (Terminal / Dystopian dark + Earthy Brutalist light) with the same routes and flows as v0.1. Layout and components use PRD tokens (`src/index.css`, `tailwind.config.js`). Some actions remain stubbed; data is still JSON via repositories.
+Production-shaped **web app** (React + Vite + TypeScript + Tailwind) implementing [PRD.md](../PRD.md) **v1.0 frontend scope**: dual themes (terminal dark / earthy light), full IA, quiz + flashcards + analytics, **static JSON** data via repositories (no backend API yet).
 
 ## Run
 
@@ -10,23 +10,21 @@ npm install
 npm run dev
 ```
 
-Open the printed local URL (usually `http://localhost:5173`).
+## Features (v1)
+
+- **Themes:** System / dark / light (`altcode_theme_preference` + resolved `data-theme`).
+- **Auth:** Demo login + OTP; `returnUrl` preserved through `/login?returnUrl=…`.
+- **Screens:** Dashboard (3-pane + progression), topics + category rail, module tabs, flashcard hub & session (combo, progress, completion XP), quiz setup (5–60 min) & active (navigator + timer states), result dissection (time, XP, remediation deck), analytics matrix, settings.
+- **A11y:** `:focus-visible` rings; reduced-motion trims body transition; live grid animation respects `prefers-reduced-motion` (see `index.css`).
 
 ## Demo auth (development only)
 
-| Field    | Value                 |
-| -------- | --------------------- |
+| Field    | Value                   |
+| -------- | ----------------------- |
 | Email    | `7.ashutoshj@gmail.com` |
-| Password | `altcode@123`         |
-| OTP      | `888888`              |
-
-## Structure
-
-- `src/data/static/` — JSON content (replace with CMS/API later via repositories).
-- `src/data/repositories/` — static repository implementations.
-- `src/pages/` — route screens.
-- `src/app/` — auth, layout, theme, search context.
+| Password | `altcode@123`           |
+| OTP      | `888888`                |
 
 ## Requirements
 
-- Node 18+ (Node 20+ recommended for latest tooling).
+- Node 18+ (Node 20+ recommended).

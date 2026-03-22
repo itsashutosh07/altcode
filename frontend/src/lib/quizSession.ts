@@ -5,6 +5,8 @@ export type StoredQuizSession = {
   startedAt: number
   /** index in questionIds order -> selected option index */
   answers: Record<number, number>
+  /** Set when the learner finishes or submits (ms epoch). */
+  completedAt?: number
 }
 
 const key = (sessionId: string) => `altcode_quiz_${sessionId}`

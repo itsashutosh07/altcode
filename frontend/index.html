@@ -3,8 +3,18 @@
   <head>
     <script>
       try {
-        var t = localStorage.getItem('altcode_theme')
-        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
+        var p = localStorage.getItem('altcode_theme_preference')
+        var resolved
+        if (p === 'dark' || p === 'light') resolved = p
+        else if (p === 'system' || !p)
+          resolved = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light'
+        else {
+          var leg = localStorage.getItem('altcode_theme')
+          resolved = leg === 'light' || leg === 'dark' ? leg : 'dark'
+        }
+        document.documentElement.setAttribute('data-theme', resolved)
       } catch (e) {}
     </script>
     <meta charset="UTF-8" />
@@ -16,7 +26,7 @@
     />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AltCode — v0.2</title>
+    <title>AltCode — v1.0</title>
   </head>
   <body>
     <div id="root"></div>

@@ -32,7 +32,7 @@ export function LandingPage() {
               theme === 'light' && 'text-xs font-semibold uppercase tracking-wide',
             )}
           >
-            v0.2 prototype · dual theme
+            AltCode v1.0 · static frontend
           </p>
           <h1
             className={cn(

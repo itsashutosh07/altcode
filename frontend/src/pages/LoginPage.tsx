@@ -21,7 +21,7 @@ export function LoginPage() {
 
   useEffect(() => {
     const r = searchParams.get('returnUrl')
-    if (r) setReturnUrl(r)
+    if (r && r.startsWith('/') && !r.startsWith('//')) setReturnUrl(r)
   }, [searchParams, setReturnUrl])
 
   function onSubmit(e: FormEvent) {

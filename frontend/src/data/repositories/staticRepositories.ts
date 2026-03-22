@@ -1,4 +1,12 @@
-import type { Card, Deck, QuizQuestion, Topic } from '@/entities/types'
+import type {
+  ActivityMatrixConfig,
+  Card,
+  Deck,
+  Forecast14Bar,
+  ProgressionSnapshot,
+  QuizQuestion,
+  Topic,
+} from '@/entities/types'
 import analyticsData from '@/data/static/analytics.json'
 import cardsData from '@/data/static/cards.json'
 import decksData from '@/data/static/decks.json'
@@ -43,12 +51,48 @@ export const staticQuizRepository: QuizRepository = {
   },
 }
 
+const rawAnalytics = analyticsData as typeof analyticsData & {
+  retentionDeltaPct?: number
+  cardsLearned?: number
+  deckProgressPct?: number
+  avgTimePerCardSec?: number
+  avgTimeDeltaSec?: number
+  quizzesTaken?: number
+  cardsMastered?: number
+  forecast14?: Forecast14Bar[]
+  activityMatrix?: ActivityMatrixConfig
+  progression?: ProgressionSnapshot
+}
+
+const DEFAULT_PROGRESSION: ProgressionSnapshot = {
+  level: 1,
+  title: 'Initiate',
+  xp: 0,
+  xpNextLevel: 1000,
+  dailyGoalCurrent: 0,
+  dailyGoalTarget: 20,
+}
+
 export const staticAnalyticsRepository: AnalyticsRepository = {
   getSummary: () => ({
-    retentionPercent: analyticsData.retentionPercent,
-    cardsDueToday: analyticsData.cardsDueToday,
-    streakDays: analyticsData.streakDays,
-    forecast: [...analyticsData.forecast],
-    heatmap: [...analyticsData.heatmap],
+    retentionPercent: rawAnalytics.retentionPercent,
+    retentionDeltaPct: rawAnalytics.retentionDeltaPct ?? 0,
+    cardsDueToday: rawAnalytics.cardsDueToday,
+    streakDays: rawAnalytics.streakDays,
+    cardsLearned: rawAnalytics.cardsLearned ?? 0,
+    deckProgressPct: rawAnalytics.deckProgressPct ?? 0,
+    avgTimePerCardSec: rawAnalytics.avgTimePerCardSec ?? 0,
+    avgTimeDeltaSec: rawAnalytics.avgTimeDeltaSec ?? 0,
+    quizzesTaken: rawAnalytics.quizzesTaken ?? 0,
+    cardsMastered: rawAnalytics.cardsMastered ?? 0,
+    forecast: [...rawAnalytics.forecast],
+    forecast14: [...(rawAnalytics.forecast14 ?? [])],
+    heatmap: [...rawAnalytics.heatmap],
+    activityMatrix: rawAnalytics.activityMatrix ?? {
+      weekCount: 24,
+      datalinkWeekIndex: 15,
+      seed: 42,
+    },
+    progression: rawAnalytics.progression ?? DEFAULT_PROGRESSION,
   }),
 }

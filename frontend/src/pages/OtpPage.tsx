@@ -32,9 +32,8 @@ export function OtpPage() {
       return
     }
     const next = consumeReturnUrl()
-    navigate(next && next.startsWith('/') ? next : '/dashboard', {
-      replace: true,
-    })
+    const safe = next && next.startsWith('/') && !next.startsWith('//')
+    navigate(safe ? next : '/dashboard', { replace: true })
   }
 
   return (

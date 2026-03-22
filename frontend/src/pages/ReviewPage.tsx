@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTheme } from '@/app/theme/ThemeContext'
-import { staticDeckRepository } from '@/data/repositories/staticRepositories'
+import { StudyOverview } from '@/features/study/StudyOverview'
+import {
+  staticAnalyticsRepository,
+  staticDeckRepository,
+} from '@/data/repositories/staticRepositories'
 import { cn } from '@/shared/lib/cn'
 
 export function ReviewPage() {
@@ -9,6 +13,8 @@ export function ReviewPage() {
   const [searchParams] = useSearchParams()
   const session = searchParams.get('session')
   const deckId = searchParams.get('deckId')
+
+  const isHub = !session && !deckId
 
   const cards = useMemo(() => {
     if (session === 'daily') {
@@ -22,6 +28,7 @@ export function ReviewPage() {
 
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
+  const [graded, setGraded] = useState(0)
 
   const card = cards[index]
   const done = cards.length > 0 && index >= cards.length
@@ -29,12 +36,17 @@ export function ReviewPage() {
   useEffect(() => {
     setIndex(0)
     setFlipped(false)
+    setGraded(0)
   }, [session, deckId, cards.length])
 
-  const advance = useCallback((nextIndex: number) => {
-    setFlipped(false)
-    setIndex(nextIndex)
-  }, [])
+  const advance = useCallback(
+    (nextIndex: number) => {
+      setFlipped(false)
+      if (nextIndex > index) setGraded((g) => g + 1)
+      setIndex(nextIndex)
+    },
+    [index],
+  )
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -54,26 +66,63 @@ export function ReviewPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [card, flipped, index, advance, done])
 
+  const summary = staticAnalyticsRepository.getSummary()
+
+  if (isHub) {
+    return (
+      <div className="space-y-8">
+        <StudyOverview variant="review" />
+        <p className="text-center text-sm text-alt-muted">
+          Pick a deck from recent topics,{' '}
+          <Link to="/topics" className="text-alt-primary underline">
+            browse all topics
+          </Link>
+          , or start a{' '}
+          <Link to="/review?session=daily" className="text-alt-primary underline">
+            daily review
+          </Link>
+          .
+        </p>
+      </div>
+    )
+  }
+
   if (cards.length === 0) {
     return (
       <div className="space-y-4">
         <h1 className="alt-page-title">Review</h1>
         <p className="text-alt-muted">No cards for this session.</p>
-        <Link to="/dashboard" className="text-sm text-alt-primary underline">
-          Dashboard
+        <Link to="/review" className="text-sm text-alt-primary underline">
+          Flashcards overview
         </Link>
       </div>
     )
   }
 
+  const xpGained = cards.length * 12 + graded * 3
+
   if (done) {
     return (
-      <div className="mx-auto max-w-lg space-y-4 text-center">
+      <div className="mx-auto max-w-lg space-y-6 text-center">
         <h1 className="alt-page-title">Session complete</h1>
-        <p className="text-alt-muted">v0.2 — static prototype; no SM-2 yet.</p>
-        <Link to="/dashboard" className="alt-btn-primary inline-flex">
-          Back to dashboard
-        </Link>
+        <div className="alt-card border-alt-primary/40 p-6 text-left">
+          <p className="text-sm text-alt-muted">Session summary (static v1)</p>
+          <p className="mt-2 text-2xl font-bold text-alt-primary">+{xpGained} XP</p>
+          <p className="mt-2 text-sm text-alt-text">
+            Cards reviewed: {cards.length} · Grades logged: {graded}
+          </p>
+          <p className="mt-2 text-sm text-alt-muted">
+            Streak (account): {summary.streakDays} days · SM-2 scheduling ships with backend phase.
+          </p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link to="/dashboard" className="alt-btn-primary inline-flex">
+            Dashboard
+          </Link>
+          <Link to="/review" className="alt-btn-secondary inline-flex">
+            Flashcards home
+          </Link>
+        </div>
       </div>
     )
   }
@@ -92,17 +141,32 @@ export function ReviewPage() {
       theme === 'light' && 'border-alt-border hover:border-alt-primary',
     )
 
+  const progressPct = ((index + 1) / cards.length) * 100
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div className="flex items-center justify-between text-sm text-alt-muted">
-        <Link to="/dashboard" className="font-mono underline hover:text-alt-primary">
-          [EXIT]
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-alt-border">
+        <div
+          className="h-full bg-alt-primary transition-all duration-300 dark:bg-gradient-to-r dark:from-alt-cyan dark:to-alt-primary"
+          style={{ width: `${progressPct}%` }}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-alt-muted">
+        <Link to="/review" className="font-mono underline hover:text-alt-primary">
+          [← OVERVIEW]
         </Link>
         <span className="font-mono">
           {index + 1} / {cards.length}
         </span>
-        {theme === 'dark' && (
-          <span className="font-mono text-alt-cyan">combo: —</span>
+        {theme === 'dark' ? (
+          <span className="font-mono text-alt-cyan">
+            combo: {graded > 0 ? graded : '—'}
+          </span>
+        ) : (
+          <span className="text-xs text-alt-muted">
+            Streak this session: {graded > 0 ? graded : '—'}
+          </span>
         )}
       </div>
 

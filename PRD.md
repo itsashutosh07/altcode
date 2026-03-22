@@ -1,6 +1,6 @@
 # AltCode — Unified Product Requirements Document
 
-**Version:** 1.1  
+**Version:** 2.0  
 **Product:** AltCode — Quiz + Flashcards for technical interview prep  
 **Platforms:** Web, desktop-first (responsive tablet/mobile)  
 **Themes:** Two persistent modes — **Dark: Terminal / Dystopian** and **Light: Earthy Minimal Brutalist**
@@ -13,7 +13,7 @@ AltCode is a single product with **one information architecture** and **one set 
 
 | Theme | Essence | Handpicked from |
 |-------|---------|-----------------|
-| **Dark** | IDE-native, high contrast, “live” void background, monospace discipline | Terminal (structure, copy, grids), Arcade (timer bar, combo/XP feedback, elevation on focus), minimal doc patterns for readability of long text, glass font: Space Grotesk |
+| **Dark** | IDE-native, high contrast, “live” void background, monospace discipline | Terminal (structure, copy, grids), Arcade (timer bar, combo/XP feedback, elevation on focus), minimal doc patterns for readability of long text; UI font **JetBrains Mono** (§5.1) |
 | **Light** | Airy, handcrafted, earthy neutrals, neo-brutalist geometry (angled cuts, hard edges), doc clarity | Clean Documentation (IA, typography rhythm, Result Disection), Terminal (keyboard affordances expressed as subtle labels), Arcade (progress as calm meters, not neon), font: Space Grotesk |
 
 **North star:** *Time to first review* under 30 seconds from landing; *zero ambiguous next steps* on Dashboard; *same routes and shortcuts* in both themes.
@@ -39,8 +39,9 @@ Delivery is staged so **flows and UX** are validated before final visual polish:
 
 1. **v0.1 prototype** — End-to-end **routes and major flows** (auth, dashboard, topics, flashcards, quiz, results) with **static data** and **wireframe-level UI** (single neutral styling is acceptable). Goal: validate buttons, navigation, and interaction model.
 2. **v0.2 prototype** — **Dual-theme visual prototype** (dark: Terminal / Dystopian, light: Earthy Brutalist per §5) so reviewers can judge **color, typography, and per-screen feel** in both modes. Screens are **statically laid out** per this PRD; not all behaviors need to work. **Information priority:** **Quiz before flashcards** in primary nav order, dashboard CTAs, and topic/deck action rows. **App shell:** **Hamburger control** in the header toggles the **left rail** open/closed (persisted preference). Reference implementation: `frontend/` (`data-theme` on `<html>`, CSS variables in `index.css`, shared `alt-*` utility classes).
-3. **PRD refresh** — After UX and theme direction are agreed, **update this document** (version bump, changelog note, resolved open decisions, finalized tokens/themes in section 5). The refreshed PRD remains the single spec for v1.0 visual work.
-4. **v1.0 frontend** — **Full dual-theme** implementation and polish per the **updated** PRD, still **frontend-only** and **static-file** data until a backend phase is scoped.
+3. **PRD refresh (this document, v2.0)** — Locks **v1.0 frontend** scope, resolves §14 open decisions for the static app, and records implementation status in **§15**.
+4. **v1.0 frontend (shipped)** — **Full dual-theme** UI per §5–§7: system/dark/light preference, dashboard three-pane layout with heatmap + progression + leaderboard placeholder, topic directory with **category sidebar** (desktop) / ribbon (mobile), deck overview **tabs** (Outline · Flashcards · Quizzes), flashcard hub + session **progress bar**, **combo / streak copy**, **completion summary** (static XP line), quiz setup **5–60 min**, active quiz **navigator + timer states + explicit Next**, result dissection **time used**, **XP earned**, **remediation deck** stub (`deck-remediation`), analytics **KPI + 14-day + matrix + week overview + schedule-review deep link**, settings **appearance + keyboard**, **returnUrl** auth, **focus-visible** and **reduced-motion** baseline (§11). **Data:** static JSON only; **SM-2, real XP persistence, and API** are **out of scope** until a backend phase.
+5. **Next (post–v1.0)** — Backend/API, real spaced repetition, auth provider, optional leaderboard; keep token-based theming and repository boundary.
 
 ---
 
@@ -72,6 +73,7 @@ Delivery is staged so **flows and UX** are validated before final visual polish:
 | `/quiz/:sessionId` | Active Quiz |
 | `/quiz/:sessionId/results` | Result Disection |
 | `/analytics` | Analytics Matrix |
+| `/settings` | Settings |
 
 Deep links from Dashboard cards must resolve to these routes without extra “mode” confusion.
 
@@ -123,7 +125,7 @@ Components are **the same structure**; tokens differ. Below: handpicked influenc
 | Primary CTA | `#C45C3E` (earthy) or keep `#0070F3` if brand prefers tech-blue — **choose one in implementation; PRD assumes terracotta** |
 | Success | `#3F6F50` |
 | Error | `#B91C1C` |
-| Typography | `Geist` / `Geist Mono` (Clean Docs); display headings may use slight **negative tracking** |
+| Typography | **Light:** `Space Grotesk` UI + `Kode Mono` for code/data (Google Fonts). **Dark:** `JetBrains Mono` UI + code (PRD §5.1). Display headings may use slight **negative tracking** in light. |
 | Radius | `4px` default; **brutalist chips** may be `0` with thick border |
 | Motion | Flip 300ms; **no** neon glow; hover = border/offset shift |
 
@@ -166,15 +168,15 @@ Each screen lists: **Purpose**, **Layout**, **Key elements**, **States**, **Them
 **Layout (desktop):**
 
 - **Left:** Global nav (fixed).
-- **Center:** Primary column — (1) **Hero / Daily objective** with primary CTA, (2) **Deck grid** or list (cards due, mastery), (3) **Recent topics** with progress bars.
-- **Right:** **Activity heatmap** (Terminal: 52-week neon; Light: 30-day doc style) + optional **mini leaderboard** placeholder (v1: “Coming soon” or static mock).
+- **Center:** Primary column — (1) **Hero / Daily objective** (`id=daily` for deep links) with **daily goal meter**, primary CTA **Start daily review**, secondary **Start quiz**, tertiary **Browse topics**; (2) **Deck grid** (remediation deck may be hidden from grid); (3) **Recent topics** with progress bars.
+- **Right:** **Activity heatmap** (dense grid, theme-styled) + **level / XP** mini panel + **leaderboard** placeholder (“Coming soon”).
 
 **Key elements:**
 
-- Primary CTA: **Start daily review** (routes to `/review?session=daily`).
-- Secondary: **Browse topics** → `/topics`.
-- Tertiary: **Start quiz** → `/quiz/new`.
-- Per-deck: due count, `[Study]` / `[EXECUTE]` label per theme, deck settings overflow.
+- Primary CTA: **Start daily review** → `/review?session=daily` (PRD canonical home flow §8.1).
+- Secondary: **Start quiz** → `/quiz/new`.
+- Tertiary: **Browse topics** → `/topics`.
+- Per-deck: due count, **Quiz** / **Study** (dark: EXECUTE / STUDY / OPEN optional), link to topic TOC.
 
 **States:** Empty (no decks), loading (theme-specific skeleton), error inline.
 
@@ -322,9 +324,11 @@ Each screen lists: **Purpose**, **Layout**, **Key elements**, **States**, **Them
 
 ### SCREEN I — Settings (minimal v1)
 
-**Purpose:** Theme preference (system / dark / light), keyboard shortcut legend, account stub.
+**Purpose:** Theme preference **system / dark / light** (system follows `prefers-color-scheme`), keyboard shortcut legend, account stub.
 
-**Layout:** Simple form list.
+**Layout:** Simple form list; resolved theme shown for debugging copy when “System” is selected.
+
+**Implementation:** `altcode_theme_preference` in `localStorage`; inline script in `index.html` reduces theme flash on load.
 
 ---
 
@@ -425,14 +429,40 @@ Each screen lists: **Purpose**, **Layout**, **Key elements**, **States**, **Them
 6. **Analytics Matrix**.
 7. Polish: live background (dark), angled panels (light), motion preferences.
 
+*As of PRD v2.0, the shipped **v1.0** frontend is summarized in **§15**; §13 remains the original planning sequence.*
+
 ---
 
-## 14. Open decisions (product to lock before UI freeze)
+## 14. Open decisions (resolved for v1.0 static frontend)
 
-1. Light theme **primary** color: earthy terracotta vs brand blue `#0070F3`.
-2. Quiz navigation: **auto-advance** vs **explicit Next**.
-3. Leaderboard: v1 real, mock, or hidden.
-4. Auth provider and whether **Screen J** ships in v1.
+| Topic | Resolution (v1.0) |
+|-------|-------------------|
+| Light primary | **Terracotta** `#C45C3E` (§5.2); no brand blue in default tokens. |
+| Quiz navigation | **Explicit Next** + optional Submit; reduces mis-taps (Screen F). |
+| Leaderboard | **Placeholder** only (“Coming soon”) on Dashboard. |
+| Auth / Screen J | **Demo** email/password + OTP in `frontend`; **Screen J** = landing + login + verify. **returnUrl** supported. Real IdP deferred. |
+
+*Future backend phase may reopen provider, leaderboard, and XP persistence.*
+
+---
+
+## 15. v1.0 implementation status (`frontend/`)
+
+| Area | Status |
+|------|--------|
+| Tokens & themes | CSS variables + `data-theme`; dark live grid (motion-safe); light angled panels where specified. |
+| Theme modes | **System / dark / light**; header toggle sets explicit dark↔light. |
+| Shell | Collapsible rail, search `/` & ⌘K, progression chip (level + XP bar from static JSON). |
+| Dashboard | Three-pane, daily hero `#daily`, decks, recent topics, heatmap, XP card, leaderboard stub. |
+| Topics | Category sidebar (desktop) + filter ribbon (mobile). |
+| Deck TOC | Tabs: Outline · Flashcards · Quizzes. |
+| Flashcards | Hub at `/review`; session progress bar, combo copy, completion XP summary. |
+| Quiz | Setup 5–60 min; active navigator + phased timer; session `completedAt` for results. |
+| Results | Score, concepts, correct list, missed accordions, **time used**, **XP earned**, **Generate deck from misses** → `deck-remediation`. |
+| Analytics | KPI row, 14-day chart, activity matrix, week strip, link to `/dashboard#daily`. |
+| Settings | Appearance + keyboard legend. |
+| Data | `src/data/static/*.json` + repositories; **no API**. |
+| a11y / perf | `focus-visible` outlines; reduced motion on body transition; code blocks scroll-x. |
 
 ---
 
@@ -440,7 +470,8 @@ Each screen lists: **Purpose**, **Layout**, **Key elements**, **States**, **Them
 
 | Version | Notes |
 |--------|--------|
-| 1.1 | Added **v0.2 prototype** to §2.3; §4.1 updated for **quiz-first** nav, **hamburger** + **collapsible left rail**, and persistence; aligns with static `frontend` v0.2 theme preview. |
+| **2.0** | **v1.0 frontend** scope locked; §2.3–§4.2–§5.2–§14–§15 updated; Settings route; typography note (Space Grotesk / Kode / JetBrains); Dashboard & Screen I aligned with shipped UI. |
+| 1.1 | Added **v0.2 prototype** to §2.3; §4.1 quiz-first nav, hamburger rail. |
 | 1.0 | Initial unified PRD. |
 
 *End of PRD — AltCode unified dual-theme specification.*

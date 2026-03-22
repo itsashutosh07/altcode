@@ -5,21 +5,37 @@
       "topicIds": ["algorithms"],
       "prompt": "Which structure is best for O(1) average insert, delete, and lookup by key?",
       "options": ["Array", "Hash map", "Binary search tree", "Linked list"],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "optionHints": [
+        "Fixed index access; inserts/deletes are often O(n).",
+        "Expected O(1) for hash-based buckets with a good hash.",
+        "O(log n) search on sorted order.",
+        "O(n) lookup unless you keep extra indexes."
+      ],
+      "explanation": "Hash tables provide expected constant-time operations for key-value access when collisions are managed and the hash function spreads keys well."
     },
     {
       "id": "q2",
       "topicIds": ["algorithms"],
       "prompt": "Merge sort average time complexity?",
       "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "explanation": "Merge sort divides the array and merges in linear time per level, for log n levels → O(n log n) in all typical cases."
     },
     {
       "id": "q3",
       "topicIds": ["system-design"],
       "prompt": "Which pattern reduces hot-key pressure on a single cache node?",
+      "context": "You are scaling a read-heavy profile service. A few celebrity keys dominate traffic; cache nodes must not become single points for those keys.",
       "options": ["Strong consistency", "Sharding / consistent hashing", "Single-threaded writes", "Full table scans"],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "optionHints": [
+        "Useful for correctness, not for hot-key spread.",
+        "Spreads keys across nodes; virtual nodes reduce imbalance.",
+        "Serializes writes on one core; does not partition data.",
+        "Expensive and opposite of what caches optimize."
+      ],
+      "explanation": "Sharding (often with consistent hashing) distributes keys across many nodes so hot keys can be isolated or replicated without one machine owning all traffic."
     },
     {
       "id": "q4",
@@ -31,7 +47,14 @@
         "To guarantee synchronous delivery only",
         "To store primary data forever"
       ],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "optionHints": [
+        "Queues complement databases; they do not replace durable storage.",
+        "Async boundary: spikes absorbed, retries possible, services evolve independently.",
+        "Queues are inherently asynchronous; sync RPC is a different pattern.",
+        "Messages are usually retained for a bounded time or until processed."
+      ],
+      "explanation": "Message queues smooth traffic, decouple failure domains, and let downstream consumers scale at their own pace."
     },
     {
       "id": "q5",
@@ -43,7 +66,8 @@
         "DOM events only",
         "setInterval only"
       ],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "explanation": "Re-renders follow React’s state and props model (including context), not only direct DOM events."
     },
     {
       "id": "q6",
@@ -55,7 +79,8 @@
         "Fetching data",
         "Replacing useState"
       ],
-      "correctIndex": 1
+      "correctIndex": 1,
+      "explanation": "useMemo memoizes a computed value; useEffect handles side effects, and useState holds state."
     }
   ]
 }

@@ -4,6 +4,7 @@ import { useAuth } from '@/app/auth/AuthContext'
 import { useSearchOverlay } from '@/app/context/SearchContext'
 import { useTheme } from '@/app/theme/ThemeContext'
 import { SearchOverlay } from '@/features/search/SearchOverlay'
+import { staticAnalyticsRepository } from '@/data/repositories/staticRepositories'
 import { cn } from '@/shared/lib/cn'
 
 const SIDEBAR_KEY = 'altcode_sidebar_open'
@@ -52,9 +53,14 @@ function HamburgerIcon({ sidebarExpanded }: { sidebarExpanded: boolean }) {
 
 export function AppShell() {
   const { logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, preference, toggleTheme } = useTheme()
   const { openSearch, open } = useSearchOverlay()
   const navigate = useNavigate()
+  const { progression } = staticAnalyticsRepository.getSummary()
+  const xpPct =
+    progression.xpNextLevel > 0
+      ? Math.min(100, (progression.xp / progression.xpNextLevel) * 100)
+      : 0
 
   const [isMd, setIsMd] = useState(() =>
     typeof window !== 'undefined'
@@ -158,7 +164,7 @@ export function AppShell() {
                 Quiz
               </NavLink>
               <NavLink
-                to="/review?session=daily"
+                to="/review"
                 className={({ isActive }) => navLinkClass(isActive, theme)}
               >
                 Flashcards
@@ -205,16 +211,39 @@ export function AppShell() {
             >
               <HamburgerIcon sidebarExpanded={sidebarOpen} />
             </button>
-            <div className="flex flex-1 items-center justify-end gap-2">
+            <div
+              className="hidden min-w-0 flex-1 items-center justify-center gap-3 px-2 md:flex"
+              title={`${progression.xp} / ${progression.xpNextLevel} XP`}
+            >
+              <span
+                className={cn(
+                  'shrink-0 text-xs text-alt-muted',
+                  theme === 'dark' && 'font-mono uppercase',
+                )}
+              >
+                Lv {progression.level} · {progression.title}
+              </span>
+              <div className="h-1.5 w-28 max-w-[30vw] overflow-hidden rounded-full bg-alt-border">
+                <div
+                  className="h-full rounded-full bg-alt-cyan transition-all dark:bg-alt-primary"
+                  style={{ width: `${xpPct}%` }}
+                />
+              </div>
+            </div>
+            <div className="flex flex-1 items-center justify-end gap-2 md:flex-initial">
               <button
                 type="button"
                 className="rounded-alt border border-alt-border px-3 py-1 text-xs font-medium text-alt-text hover:border-alt-primary"
                 onClick={toggleTheme}
-                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                title={
+                  preference === 'system'
+                    ? `Following system (${theme}). Click to set ${theme === 'dark' ? 'light' : 'dark'}.`
+                    : `Switch to ${theme === 'dark' ? 'light' : 'dark'}`
+                }
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}
               </button>
-              <span className="hidden text-xs text-alt-muted sm:inline">v0.2</span>
+              <span className="hidden text-xs text-alt-muted sm:inline">v1.0</span>
               <button
                 type="button"
                 className="rounded-alt border border-alt-border px-3 py-1 text-sm text-alt-text hover:border-alt-error hover:text-alt-error"

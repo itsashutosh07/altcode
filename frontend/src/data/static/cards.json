@@ -44,5 +44,27 @@
       "front": "Why should hook order not change between renders?",
       "back": "React relies on call order to associate state with hooks; conditional hooks break that mapping."
     }
+  ],
+  "deck-remediation": [
+    {
+      "id": "rm1",
+      "front": "Revisit: Why does simple hash sharding hurt when cluster size changes?",
+      "back": "Changing N in hash(key) % N reshuffles most keys → massive data movement. Prefer consistent hashing or logical partitions."
+    },
+    {
+      "id": "rm2",
+      "front": "Revisit: When is a message queue better than synchronous RPC?",
+      "back": "When you need decoupling, buffering under load, and independent failure/retry semantics between producers and consumers."
+    },
+    {
+      "id": "rm3",
+      "front": "Revisit: What does useMemo optimize?",
+      "back": "It memoizes a computed value to skip recomputation when dependencies are unchanged — not side effects or network I/O."
+    },
+    {
+      "id": "rm4",
+      "front": "Revisit: Name one benefit of cache-aside with TTL for read-heavy workloads.",
+      "back": "It protects the database from thundering herds on hot keys while allowing stale reads bounded by TTL (eventual consistency)."
+    }
   ]
 }

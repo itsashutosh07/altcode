@@ -1,7 +1,14 @@
 {
   "retentionPercent": 87.4,
-  "cardsDueToday": 62,
-  "streakDays": 14,
+  "retentionDeltaPct": 2.1,
+  "cardsDueToday": 14,
+  "streakDays": 12,
+  "cardsLearned": 1024,
+  "deckProgressPct": 65,
+  "avgTimePerCardSec": 8.4,
+  "avgTimeDeltaSec": -0.5,
+  "quizzesTaken": 24,
+  "cardsMastered": 1248,
   "forecast": [
     { "date": "Mon", "count": 20 },
     { "date": "Tue", "count": 35 },
@@ -11,6 +18,22 @@
     { "date": "Sat", "count": 10 },
     { "date": "Sun", "count": 8 }
   ],
+  "forecast14": [
+    { "label": "T", "heightPct": 80, "tooltip": "120 cards" },
+    { "label": "T+1", "heightPct": 60, "tooltip": "90 cards" },
+    { "label": "T+2", "heightPct": 95, "tooltip": "142 cards" },
+    { "label": "T+3", "heightPct": 40, "tooltip": "60 cards" },
+    { "label": "T+4", "heightPct": 30, "tooltip": "45 cards" },
+    { "label": "T+5", "heightPct": 50, "tooltip": "75 cards" },
+    { "label": "T+6", "heightPct": 70, "tooltip": "105 cards" },
+    { "label": "T+7", "heightPct": 20, "tooltip": "30 cards" },
+    { "label": "T+8", "heightPct": 10, "tooltip": "ERR_DATA", "error": true },
+    { "label": "T+9", "heightPct": 45, "tooltip": "67 cards" },
+    { "label": "T+10", "heightPct": 55, "tooltip": "82 cards" },
+    { "label": "T+11", "heightPct": 35, "tooltip": "52 cards" },
+    { "label": "T+12", "heightPct": 25, "tooltip": "37 cards" },
+    { "label": "T+13", "heightPct": 15, "tooltip": "22 cards" }
+  ],
   "heatmap": [
     { "day": "M", "intensity": 2 },
     { "day": "T", "intensity": 3 },
@@ -19,5 +42,18 @@
     { "day": "F", "intensity": 2 },
     { "day": "S", "intensity": 0 },
     { "day": "S", "intensity": 1 }
-  ]
+  ],
+  "activityMatrix": {
+    "weekCount": 24,
+    "datalinkWeekIndex": 15,
+    "seed": 42
+  },
+  "progression": {
+    "level": 12,
+    "title": "Architect",
+    "xp": 8420,
+    "xpNextLevel": 10000,
+    "dailyGoalCurrent": 12,
+    "dailyGoalTarget": 50
+  }
 }

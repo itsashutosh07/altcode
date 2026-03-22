@@ -20,6 +20,13 @@
       "topicId": "react-internals",
       "dueCount": 8,
       "masteryPercent": 41
+    },
+    {
+      "id": "deck-remediation",
+      "title": "Quiz remediation (stub)",
+      "topicId": "system-design",
+      "dueCount": 4,
+      "masteryPercent": 0
     }
   ]
 }
