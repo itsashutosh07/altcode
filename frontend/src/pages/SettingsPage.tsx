@@ -68,7 +68,7 @@ export function SettingsPage() {
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
         <div className="min-w-0 flex-1 space-y-6 lg:max-w-xl">
           <div className="alt-card p-4 text-sm">
-            <p className="font-medium text-alt-text">Account (demo)</p>
+            <p className="font-medium text-alt-text">Account</p>
             <p className="mt-1 text-alt-muted">{DEMO_EMAIL}</p>
           </div>
           <div className="alt-card p-4 text-sm">
@@ -130,9 +130,6 @@ export function SettingsPage() {
             contactText="Contact me"
             showUserInfo
             onContactClick={openContact}
-            footer={
-              <p className="text-center text-xs text-alt-muted">{DEMO_EMAIL}</p>
-            }
           />
         </aside>
       </div>
