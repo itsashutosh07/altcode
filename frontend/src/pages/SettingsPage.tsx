@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { DEMO_EMAIL } from "@/app/auth/constants";
 import type { ThemePreference } from "@/app/theme/ThemeContext";
 import { useTheme } from "@/app/theme/ThemeContext";
@@ -56,14 +56,6 @@ export function SettingsPage() {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const innerGradient = useMemo(
-    () =>
-      theme === "dark"
-        ? "linear-gradient(145deg, rgba(0, 255, 65, 0.12) 0%, rgba(96, 73, 110, 0.55) 45%, rgba(0, 40, 24, 0.75) 100%)"
-        : "linear-gradient(145deg, rgba(196, 92, 62, 0.18) 0%, rgba(250, 248, 244, 0.85) 55%, rgba(196, 92, 62, 0.1) 100%)",
-    [theme],
-  );
-
   const setPref = (p: ThemePreference) => () => setPreference(p);
 
   const openContact = () => {
@@ -71,84 +63,79 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
-      <div className="min-w-0 flex-1 space-y-6 lg:max-w-xl">
-        <h1 className="alt-page-title">Profile</h1>
-        <div className="alt-card p-4 text-sm">
-          <p className="font-medium text-alt-text">Account (demo)</p>
-          <p className="mt-1 text-alt-muted">{DEMO_EMAIL}</p>
-        </div>
-        <div className="alt-card p-4 text-sm">
-          <p className="font-medium text-alt-text">Appearance</p>
-          <p className="mt-1 text-alt-muted">
-            Match your OS, or pin dark / light. Maps to PRD §5 tokens.
-          </p>
-          <div className="mt-3 flex flex-col gap-2">
-            <ThemeOption
-              label="System (follow OS)"
-              active={preference === "system"}
-              onClick={setPref("system")}
-              theme={theme}
-            />
-            <ThemeOption
-              label="Dark — Terminal / dystopian"
-              active={preference === "dark"}
-              onClick={setPref("dark")}
-              theme={theme}
-            />
-            <ThemeOption
-              label="Light — Earthy brutalist"
-              active={preference === "light"}
-              onClick={setPref("light")}
-              theme={theme}
-            />
+    <div className="mx-auto max-w-6xl space-y-6">
+      <h1 className="alt-page-title">Profile</h1>
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        <div className="min-w-0 flex-1 space-y-6 lg:max-w-xl">
+          <div className="alt-card p-4 text-sm">
+            <p className="font-medium text-alt-text">Account (demo)</p>
+            <p className="mt-1 text-alt-muted">{DEMO_EMAIL}</p>
           </div>
-          <p className="mt-3 text-xs text-alt-muted">
-            Currently rendering:{" "}
-            <strong className="text-alt-text">{theme}</strong>
-            {preference === "system" ? " (from system)" : ""}.
-          </p>
+          <div className="alt-card p-4 text-sm">
+            <p className="font-medium text-alt-text">Appearance</p>
+            <p className="mt-1 text-alt-muted">
+              Match your OS, or pin dark / light. Maps to PRD §5 tokens.
+            </p>
+            <div className="mt-3 flex flex-col gap-2">
+              <ThemeOption
+                label="System (follow OS)"
+                active={preference === "system"}
+                onClick={setPref("system")}
+                theme={theme}
+              />
+              <ThemeOption
+                label="Dark — Terminal / dystopian"
+                active={preference === "dark"}
+                onClick={setPref("dark")}
+                theme={theme}
+              />
+              <ThemeOption
+                label="Light — Earthy brutalist"
+                active={preference === "light"}
+                onClick={setPref("light")}
+                theme={theme}
+              />
+            </div>
+            <p className="mt-3 text-xs text-alt-muted">
+              Currently rendering:{" "}
+              <strong className="text-alt-text">{theme}</strong>
+              {preference === "system" ? " (from system)" : ""}.
+            </p>
+          </div>
+          <div className="alt-card p-4 text-sm">
+            <p className="font-medium text-alt-text">Keyboard</p>
+            <ul className="mt-2 list-inside list-disc text-alt-muted">
+              <li>
+                <kbd className="font-mono text-alt-text">/</kbd> or{" "}
+                <kbd className="font-mono text-alt-text">⌘K</kbd> — search
+              </li>
+              <li>
+                Review: <kbd className="font-mono text-alt-text">Space</kbd>{" "}
+                flip, <kbd className="font-mono text-alt-text">1–4</kbd> grade
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="alt-card p-4 text-sm">
-          <p className="font-medium text-alt-text">Keyboard</p>
-          <ul className="mt-2 list-inside list-disc text-alt-muted">
-            <li>
-              <kbd className="font-mono text-alt-text">/</kbd> or{" "}
-              <kbd className="font-mono text-alt-text">⌘K</kbd> — search
-            </li>
-            <li>
-              Review: <kbd className="font-mono text-alt-text">Space</kbd> flip,{" "}
-              <kbd className="font-mono text-alt-text">1–4</kbd> grade
-            </li>
-          </ul>
-        </div>
-      </div>
 
-      <aside className="mx-auto w-full shrink-0 lg:mx-0 lg:w-[min(100%,380px)] xl:w-[min(100%,420px)]">
-        <div className="alt-card p-4 text-sm">
-          <div className="flex justify-center">
-            <ProfileCard
-              avatarUrl={subjectPortrait}
-              iconUrl={iconPattern}
-              grainUrl={grainTexture}
-              innerGradient={innerGradient}
-              enableTilt={!reduceMotion}
-              name={DEMO_PROFILE.name}
-              title={DEMO_PROFILE.title}
-              handle={DEMO_PROFILE.handle}
-              status={DEMO_PROFILE.status}
-              contactText="Contact me"
-              showUserInfo
-              onContactClick={openContact}
-              footer={
-                <p className="text-center text-xs text-alt-muted">
-                  {DEMO_EMAIL}
-                </p>
-              }
-            />
-          </div>
-        </div>
-      </aside>
+        <aside className="mx-auto flex w-full shrink-0 justify-center lg:mx-0 lg:w-[min(100%,380px)] xl:w-[min(100%,420px)]">
+          <ProfileCard
+            avatarUrl={subjectPortrait}
+            iconUrl={iconPattern}
+            grainUrl={grainTexture}
+            enableTilt={!reduceMotion}
+            name={DEMO_PROFILE.name}
+            title={DEMO_PROFILE.title}
+            handle={DEMO_PROFILE.handle}
+            status={DEMO_PROFILE.status}
+            contactText="Contact me"
+            showUserInfo
+            onContactClick={openContact}
+            footer={
+              <p className="text-center text-xs text-alt-muted">{DEMO_EMAIL}</p>
+            }
+          />
+        </aside>
+      </div>
     </div>
   );
 }

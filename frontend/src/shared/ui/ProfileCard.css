@@ -35,6 +35,66 @@
   touch-action: none;
 }
 
+/*
+ * Blurred halo behind the card (.pc-card-wrapper::before).
+ * Uses inherited --alt-primary from [data-theme] on html.
+ */
+[data-theme='dark'] .pc-card-wrapper {
+  --pc-behind-glow-default: radial-gradient(
+      farthest-side circle at var(--pointer-x) var(--pointer-y),
+      color-mix(in srgb, var(--alt-primary) 45%, transparent) 4%,
+      color-mix(in srgb, var(--alt-primary) 30%, transparent) 12%,
+      transparent 52%
+    ),
+    radial-gradient(
+      35% 52% at 55% 20%,
+      color-mix(in srgb, var(--alt-primary) 58%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      100% 100% at 50% 50%,
+      color-mix(in srgb, var(--alt-primary) 40%, transparent) 1%,
+      transparent 76%
+    ),
+    conic-gradient(
+      from 124deg at 50% 50%,
+      #050505 0%,
+      color-mix(in srgb, var(--alt-primary) 75%, #000) 20%,
+      #0a0a0a 40%,
+      color-mix(in srgb, var(--alt-primary) 68%, #000) 60%,
+      #080808 80%,
+      color-mix(in srgb, var(--alt-primary) 72%, #000) 100%
+    );
+}
+
+[data-theme='light'] .pc-card-wrapper {
+  --pc-behind-glow-default: radial-gradient(
+      farthest-side circle at var(--pointer-x) var(--pointer-y),
+      color-mix(in srgb, var(--alt-primary) 35%, #fff8) 5%,
+      color-mix(in srgb, var(--alt-primary) 22%, transparent) 14%,
+      transparent 55%
+    ),
+    radial-gradient(
+      38% 55% at 52% 22%,
+      color-mix(in srgb, var(--alt-primary) 45%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      100% 100% at 50% 50%,
+      color-mix(in srgb, var(--alt-primary) 32%, #fafaf9) 2%,
+      transparent 78%
+    ),
+    conic-gradient(
+      from 124deg at 50% 50%,
+      #292524 0%,
+      color-mix(in srgb, var(--alt-primary) 55%, #1c1917) 22%,
+      #44403c 42%,
+      color-mix(in srgb, var(--alt-primary) 50%, #292524) 62%,
+      #1c1917 82%,
+      color-mix(in srgb, var(--alt-primary) 48%, #292524) 100%
+    );
+}
+
 .pc-card-wrapper::before {
   content: '';
   position: absolute;
@@ -92,6 +152,26 @@
       #c137ffff 100%
     );
   overflow: hidden;
+}
+
+/*
+ * Rim + outer drop shadow only — card face keeps default purple/cyan/mint stack above.
+ * Back-of-card glow is .pc-card-wrapper::before (--pc-behind-glow-default).
+ */
+[data-theme='dark'] .pc-card {
+  box-shadow: rgba(0, 0, 0, 0.92) calc((var(--pointer-from-left) * 10px) - 3px)
+      calc((var(--pointer-from-top) * 20px) - 6px) 22px -4px,
+    0 0 0 1px #030303,
+    0 0 0 2px color-mix(in srgb, var(--alt-primary) 50%, #000000),
+    0 0 32px -8px color-mix(in srgb, var(--alt-primary) 42%, transparent);
+}
+
+[data-theme='light'] .pc-card {
+  box-shadow: rgba(28, 25, 23, 0.35) calc((var(--pointer-from-left) * 10px) - 3px)
+      calc((var(--pointer-from-top) * 20px) - 6px) 18px -4px,
+    0 0 0 1px rgba(0, 0, 0, 0.9),
+    0 0 0 2px color-mix(in srgb, var(--alt-primary) 45%, #1c1917),
+    0 0 28px -6px color-mix(in srgb, var(--alt-primary) 38%, transparent);
 }
 
 .pc-card:hover,
