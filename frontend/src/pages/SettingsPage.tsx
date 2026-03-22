@@ -1,7 +1,12 @@
-import { DEMO_EMAIL } from '@/app/auth/constants'
-import type { ThemePreference } from '@/app/theme/ThemeContext'
-import { useTheme } from '@/app/theme/ThemeContext'
-import { cn } from '@/shared/lib/cn'
+import { useEffect, useMemo, useState } from "react";
+import { DEMO_EMAIL } from "@/app/auth/constants";
+import type { ThemePreference } from "@/app/theme/ThemeContext";
+import { useTheme } from "@/app/theme/ThemeContext";
+import { cn } from "@/shared/lib/cn";
+import { ProfileCard } from "@/shared/ui/ProfileCard";
+import subjectPortrait from "@/assets/profile/Subject.png";
+import iconPattern from "@/assets/profile/Icon Pattern.png";
+import grainTexture from "@/assets/profile/Grain.webp";
 
 function ThemeOption({
   label,
@@ -9,84 +14,141 @@ function ThemeOption({
   onClick,
   theme,
 }: {
-  label: string
-  active: boolean
-  onClick: () => void
-  theme: 'dark' | 'light'
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  theme: "dark" | "light";
 }) {
   return (
     <button
       type="button"
       className={cn(
-        'rounded-alt border px-3 py-1.5 text-left text-xs font-medium transition-colors',
+        "rounded-alt border px-3 py-1.5 text-left text-xs font-medium transition-colors",
         active
-          ? theme === 'dark'
-            ? 'border-alt-primary text-alt-primary'
-            : 'border-alt-primary text-alt-text shadow-brutal'
-          : 'border-alt-border text-alt-muted hover:border-alt-border hover:text-alt-text',
+          ? theme === "dark"
+            ? "border-alt-primary text-alt-primary"
+            : "border-alt-primary text-alt-text shadow-brutal"
+          : "border-alt-border text-alt-muted hover:border-alt-border hover:text-alt-text",
       )}
       onClick={onClick}
     >
       {label}
     </button>
-  )
+  );
 }
 
-export function SettingsPage() {
-  const { theme, preference, setPreference } = useTheme()
+const DEMO_PROFILE = {
+  name: "Ashutosh Jaiswal",
+  title: "Sr. Software Engineer",
+  handle: "7.ashutoshj",
+  status: "Online",
+} as const;
 
-  const setPref = (p: ThemePreference) => () => setPreference(p)
+export function SettingsPage() {
+  const { theme, preference, setPreference } = useTheme();
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduceMotion(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const innerGradient = useMemo(
+    () =>
+      theme === "dark"
+        ? "linear-gradient(145deg, rgba(0, 255, 65, 0.12) 0%, rgba(96, 73, 110, 0.55) 45%, rgba(0, 40, 24, 0.75) 100%)"
+        : "linear-gradient(145deg, rgba(196, 92, 62, 0.18) 0%, rgba(250, 248, 244, 0.85) 55%, rgba(196, 92, 62, 0.1) 100%)",
+    [theme],
+  );
+
+  const setPref = (p: ThemePreference) => () => setPreference(p);
+
+  const openContact = () => {
+    window.location.href = `mailto:${DEMO_EMAIL}?subject=AltCode`;
+  };
 
   return (
-    <div className="max-w-lg space-y-6">
-      <h1 className="alt-page-title">Settings</h1>
-      <div className="alt-card p-4 text-sm">
-        <p className="font-medium text-alt-text">Account (demo)</p>
-        <p className="mt-1 text-alt-muted">{DEMO_EMAIL}</p>
-      </div>
-      <div className="alt-card p-4 text-sm">
-        <p className="font-medium text-alt-text">Appearance</p>
-        <p className="mt-1 text-alt-muted">
-          Match your OS, or pin dark / light. Maps to PRD §5 tokens.
-        </p>
-        <div className="mt-3 flex flex-col gap-2">
-          <ThemeOption
-            label="System (follow OS)"
-            active={preference === 'system'}
-            onClick={setPref('system')}
-            theme={theme}
-          />
-          <ThemeOption
-            label="Dark — Terminal / dystopian"
-            active={preference === 'dark'}
-            onClick={setPref('dark')}
-            theme={theme}
-          />
-          <ThemeOption
-            label="Light — Earthy brutalist"
-            active={preference === 'light'}
-            onClick={setPref('light')}
-            theme={theme}
-          />
+    <div className="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+      <div className="min-w-0 flex-1 space-y-6 lg:max-w-xl">
+        <h1 className="alt-page-title">Profile</h1>
+        <div className="alt-card p-4 text-sm">
+          <p className="font-medium text-alt-text">Account (demo)</p>
+          <p className="mt-1 text-alt-muted">{DEMO_EMAIL}</p>
         </div>
-        <p className="mt-3 text-xs text-alt-muted">
-          Currently rendering: <strong className="text-alt-text">{theme}</strong>
-          {preference === 'system' ? ' (from system)' : ''}.
-        </p>
+        <div className="alt-card p-4 text-sm">
+          <p className="font-medium text-alt-text">Appearance</p>
+          <p className="mt-1 text-alt-muted">
+            Match your OS, or pin dark / light. Maps to PRD §5 tokens.
+          </p>
+          <div className="mt-3 flex flex-col gap-2">
+            <ThemeOption
+              label="System (follow OS)"
+              active={preference === "system"}
+              onClick={setPref("system")}
+              theme={theme}
+            />
+            <ThemeOption
+              label="Dark — Terminal / dystopian"
+              active={preference === "dark"}
+              onClick={setPref("dark")}
+              theme={theme}
+            />
+            <ThemeOption
+              label="Light — Earthy brutalist"
+              active={preference === "light"}
+              onClick={setPref("light")}
+              theme={theme}
+            />
+          </div>
+          <p className="mt-3 text-xs text-alt-muted">
+            Currently rendering:{" "}
+            <strong className="text-alt-text">{theme}</strong>
+            {preference === "system" ? " (from system)" : ""}.
+          </p>
+        </div>
+        <div className="alt-card p-4 text-sm">
+          <p className="font-medium text-alt-text">Keyboard</p>
+          <ul className="mt-2 list-inside list-disc text-alt-muted">
+            <li>
+              <kbd className="font-mono text-alt-text">/</kbd> or{" "}
+              <kbd className="font-mono text-alt-text">⌘K</kbd> — search
+            </li>
+            <li>
+              Review: <kbd className="font-mono text-alt-text">Space</kbd> flip,{" "}
+              <kbd className="font-mono text-alt-text">1–4</kbd> grade
+            </li>
+          </ul>
+        </div>
       </div>
-      <div className="alt-card p-4 text-sm">
-        <p className="font-medium text-alt-text">Keyboard</p>
-        <ul className="mt-2 list-inside list-disc text-alt-muted">
-          <li>
-            <kbd className="font-mono text-alt-text">/</kbd> or{' '}
-            <kbd className="font-mono text-alt-text">⌘K</kbd> — search
-          </li>
-          <li>
-            Review: <kbd className="font-mono text-alt-text">Space</kbd> flip,{' '}
-            <kbd className="font-mono text-alt-text">1–4</kbd> grade
-          </li>
-        </ul>
-      </div>
+
+      <aside className="mx-auto w-full shrink-0 lg:mx-0 lg:w-[min(100%,380px)] xl:w-[min(100%,420px)]">
+        <div className="alt-card p-4 text-sm">
+          <div className="flex justify-center">
+            <ProfileCard
+              avatarUrl={subjectPortrait}
+              iconUrl={iconPattern}
+              grainUrl={grainTexture}
+              innerGradient={innerGradient}
+              enableTilt={!reduceMotion}
+              name={DEMO_PROFILE.name}
+              title={DEMO_PROFILE.title}
+              handle={DEMO_PROFILE.handle}
+              status={DEMO_PROFILE.status}
+              contactText="Contact me"
+              showUserInfo
+              onContactClick={openContact}
+              footer={
+                <p className="text-center text-xs text-alt-muted">
+                  {DEMO_EMAIL}
+                </p>
+              }
+            />
+          </div>
+        </div>
+      </aside>
     </div>
-  )
+  );
 }

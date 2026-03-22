@@ -17,7 +17,7 @@ const STAGGER_NAV_ITEMS = [
   { to: "/review", label: "Flashcards" },
   { to: "/topics", label: "Topics" },
   { to: "/analytics", label: "Analytics" },
-  { to: "/settings", label: "Settings" },
+  { to: "/settings", label: "Profile" },
 ] as const;
 
 function staggerMenuLinkClass(isActive: boolean) {
