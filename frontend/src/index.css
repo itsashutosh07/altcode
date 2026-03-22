@@ -19,8 +19,8 @@
   --alt-code-bg: #050505;
   --alt-code-border: #00ff41;
   --alt-radius: 0px;
-  --alt-font-ui: 'JetBrains Mono', ui-monospace, monospace;
-  --alt-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --alt-font-ui: 'Space Grotesk', system-ui, sans-serif;
+  --alt-font-mono: 'Kode Mono', ui-monospace, monospace;
   --alt-brutal-shadow: transparent;
   --alt-input-bg: #0a0a0a;
 }

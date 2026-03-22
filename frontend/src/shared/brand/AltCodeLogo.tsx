@@ -21,7 +21,7 @@ export function AltCodeLogo({ theme, className }: AltCodeLogoProps) {
 
   return (
     <svg
-      className={cn("h-10 w-auto shrink-0 sm:h-11", className)}
+      className={cn("h-11 w-auto shrink-0 sm:h-12", className)}
       width="260"
       height="200"
       viewBox="0 0 260 200"

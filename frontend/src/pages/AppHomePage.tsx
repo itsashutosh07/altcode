@@ -1,7 +1,13 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/app/theme/ThemeContext";
 import { AltCodeLogo } from "@/shared/brand/AltCodeLogo";
+import { ElectricBorder } from "@/shared/ui/ElectricBorder";
+import { ShinyText } from "@/shared/ui/ShinyText";
 import { cn } from "@/shared/lib/cn";
+
+const HOME_HERO_BLURB =
+  "Quizzes and flashcards share the same topics and progression. Use the rail to move fast — or jump straight into a flow below.";
 
 const PILLARS = [
   {
@@ -28,6 +34,22 @@ const PILLARS = [
 
 export function AppHomePage() {
   const { theme } = useTheme();
+  const [dashboardHover, setDashboardHover] = useState(false);
+  const [dashboardFocus, setDashboardFocus] = useState(false);
+  const [quizHover, setQuizHover] = useState(false);
+  const [quizFocus, setQuizFocus] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  const electricColor = theme === "dark" ? "#00ff41" : "#c45c3e";
+  const electricRadius = theme === "light" ? 4 : 0;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduceMotion(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   return (
     <div className="mx-auto max-w-3xl space-y-12 px-1 pb-16 pt-2 md:pt-4">
@@ -41,46 +63,69 @@ export function AppHomePage() {
         )}
       >
         <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-          <AltCodeLogo theme={theme} className="h-14 w-auto shrink-0 sm:h-16" />
+          <AltCodeLogo theme={theme} className="h-32 w-auto sm:h-40 md:h-44" />
           <div className="min-w-0">
-            <p
-              className={cn(
-                "text-sm font-semibold uppercase tracking-[0.2em] text-alt-primary",
-                theme === "dark" && "font-mono",
-              )}
-            >
-              AltCode
-            </p>
             <h1
               className={cn(
-                "mt-1 text-3xl font-black tracking-tight text-alt-text md:text-4xl",
-                theme === "dark" && "font-mono uppercase",
+                "font-alt text-balance text-3xl font-bold leading-[1.12] tracking-[-0.03em] text-alt-text md:text-[2.35rem] md:leading-[1.1]",
+                theme === "dark" &&
+                  "[text-shadow:0_0_48px_rgba(0,255,65,0.07)]",
               )}
             >
-              Interview prep, one shell.
+              Prepare for technical interviews—quizzes and flashcards in one place.
             </h1>
-            <p className="mt-3 max-w-xl text-alt-muted">
-              Quizzes and flashcards share the same topics and progression. Use the
-              rail to move fast — or jump straight into a flow below.
+            <p className="mt-3 max-w-xl">
+              <ShinyText
+                text={HOME_HERO_BLURB}
+                className="text-base leading-relaxed"
+                speed={3.3}
+                delay={0.5}
+                spread={120}
+                direction="left"
+                baseColor={theme === "light" ? "#78716c" : "#6b7280"}
+                shineColor={theme === "light" ? "#fafaf9" : "#d1d5db"}
+              />
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                to="/dashboard"
-                className={cn(
-                  "inline-flex items-center justify-center rounded-alt px-5 py-2.5 text-sm font-semibold transition-colors",
-                  theme === "dark"
-                    ? "border border-alt-primary text-alt-primary hover:bg-alt-primary/10"
-                    : "alt-btn-primary",
-                )}
+              <ElectricBorder
+                active={
+                  (dashboardHover || dashboardFocus) && !reduceMotion
+                }
+                color={electricColor}
+                borderRadius={electricRadius}
+                className="inline-flex rounded-alt"
+                onMouseEnter={() => setDashboardHover(true)}
+                onMouseLeave={() => setDashboardHover(false)}
               >
-                Open dashboard
-              </Link>
-              <Link
-                to="/quiz/new"
-                className="inline-flex items-center justify-center rounded-alt border border-alt-border px-5 py-2.5 text-sm font-medium text-alt-text transition-colors hover:border-alt-primary"
+                <Link
+                  to="/dashboard"
+                  onFocus={() => setDashboardFocus(true)}
+                  onBlur={() => setDashboardFocus(false)}
+                  className={cn(
+                    "inline-flex w-full items-center justify-center rounded-alt px-5 py-2.5 text-sm font-semibold transition-colors",
+                    "border border-alt-primary text-alt-primary hover:bg-alt-primary/10",
+                  )}
+                >
+                  Open dashboard
+                </Link>
+              </ElectricBorder>
+              <ElectricBorder
+                active={(quizHover || quizFocus) && !reduceMotion}
+                color={electricColor}
+                borderRadius={electricRadius}
+                className="inline-flex rounded-alt"
+                onMouseEnter={() => setQuizHover(true)}
+                onMouseLeave={() => setQuizHover(false)}
               >
-                Start a quiz
-              </Link>
+                <Link
+                  to="/quiz/new"
+                  onFocus={() => setQuizFocus(true)}
+                  onBlur={() => setQuizFocus(false)}
+                  className="inline-flex w-full items-center justify-center rounded-alt border border-alt-border px-5 py-2.5 text-sm font-medium text-alt-text transition-colors hover:border-alt-primary"
+                >
+                  Start a quiz
+                </Link>
+              </ElectricBorder>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useTheme } from "@/app/theme/ThemeContext";
 import { SearchOverlay } from "@/features/search/SearchOverlay";
 import { staticAnalyticsRepository } from "@/data/repositories/staticRepositories";
 import { AltCodeLogo } from "@/shared/brand/AltCodeLogo";
+import { TextPressureBrand } from "@/shared/brand/TextPressureBrand";
 import { cn } from "@/shared/lib/cn";
 
 const SIDEBAR_KEY = "altcode_sidebar_open";
@@ -166,16 +167,14 @@ export function AppShell() {
         <NavLink
           to="/home"
           end
+          aria-label="AltCode, home"
           className="group inline-flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90"
         >
-          <AltCodeLogo theme={theme} />
-          <span
-            className={cn(
-              "font-alt text-[30px] font-black uppercase leading-none tracking-[-0.04em] text-alt-text",
-            )}
-          >
-            ALTCODE
-          </span>
+          <AltCodeLogo
+            theme={theme}
+            className="h-12 w-auto shrink-0 sm:h-14"
+          />
+          <TextPressureBrand theme={theme} minFontSize={28} />
         </NavLink>
         <div
           className="hidden min-w-0 flex-1 items-center justify-center gap-3 px-2 md:flex"
