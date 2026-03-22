@@ -117,8 +117,8 @@ export function AppShell() {
   }, [openSearch])
 
   return (
-    <div className="live-bg min-h-screen">
-      <div className="relative z-10 flex min-h-screen">
+    <div className="relative z-10 min-h-dvh w-full">
+      <div className="flex min-h-dvh w-full">
         {!isMd && sidebarOpen ? (
           <button
             type="button"
@@ -130,8 +130,12 @@ export function AppShell() {
 
         <aside
           className={cn(
-            'relative z-30 flex flex-col overflow-hidden border-alt-border bg-alt-surface transition-[width,min-width] duration-200 ease-out',
-            'border-r',
+            'relative z-30 flex flex-col overflow-hidden border-alt-border transition-[width,min-width] duration-200 ease-out',
+            'border-r supports-[backdrop-filter]:bg-alt-surface/55 supports-[backdrop-filter]:backdrop-blur-2xl supports-[backdrop-filter]:backdrop-saturate-150',
+            'dark:supports-[backdrop-filter]:bg-alt-surface/40',
+            'supports-[backdrop-filter]:shadow-[inset_1px_0_0_0_rgba(255,255,255,0.22)]',
+            'dark:supports-[backdrop-filter]:shadow-[inset_1px_0_0_0_rgba(255,255,255,0.06)]',
+            'not-supports-[backdrop-filter]:bg-alt-surface',
             sidebarOpen ? 'w-56 min-w-[14rem]' : 'w-0 min-w-0 border-0',
           )}
         >
@@ -141,14 +145,6 @@ export function AppShell() {
               !sidebarOpen && 'pointer-events-none opacity-0',
             )}
           >
-            <div
-              className={cn(
-                'mb-6 font-bold uppercase tracking-wider text-alt-muted',
-                theme === 'dark' ? 'font-mono text-xs' : 'text-sm text-alt-text',
-              )}
-            >
-              AltCode
-            </div>
             <nav className="flex flex-col gap-1">
               <NavLink
                 to="/dashboard"
@@ -188,7 +184,7 @@ export function AppShell() {
                 Settings
               </NavLink>
             </nav>
-            <div className="mt-auto border-t border-alt-border pt-4">
+            <div className="mt-auto space-y-3 border-t border-alt-border pt-4">
               <button
                 type="button"
                 className="alt-btn-secondary w-full justify-start text-left text-xs"
@@ -196,12 +192,23 @@ export function AppShell() {
               >
                 Search <kbd className="float-right font-mono text-alt-muted">/</kbd>
               </button>
+              <p className="text-xs text-alt-muted">v1.0</p>
             </div>
           </div>
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col bg-alt-bg">
-          <header className="flex items-center gap-3 border-b border-alt-border bg-alt-surface px-3 py-2">
+        <div className="flex min-w-0 flex-1 flex-col bg-transparent">
+          <header
+            className={cn(
+              'flex items-center gap-3 border-b px-3 py-2',
+              'border-alt-border/60 dark:border-white/[0.08]',
+              'supports-[backdrop-filter]:bg-alt-surface/50 supports-[backdrop-filter]:backdrop-blur-2xl supports-[backdrop-filter]:backdrop-saturate-150',
+              'dark:supports-[backdrop-filter]:bg-alt-surface/35',
+              'supports-[backdrop-filter]:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)]',
+              'dark:supports-[backdrop-filter]:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]',
+              'not-supports-[backdrop-filter]:bg-alt-surface',
+            )}
+          >
             <button
               type="button"
               className="flex items-center justify-center rounded-alt border border-alt-border p-2 text-alt-text hover:border-alt-primary"
@@ -211,6 +218,16 @@ export function AppShell() {
             >
               <HamburgerIcon sidebarExpanded={sidebarOpen} />
             </button>
+            <NavLink
+              to="/dashboard"
+              end
+              className={cn(
+                'shrink-0 font-bold uppercase tracking-wider text-alt-text transition-opacity hover:opacity-80',
+                theme === 'dark' ? 'font-mono text-xs' : 'text-sm',
+              )}
+            >
+              AltCode
+            </NavLink>
             <div
               className="hidden min-w-0 flex-1 items-center justify-center gap-3 px-2 md:flex"
               title={`${progression.xp} / ${progression.xpNextLevel} XP`}
@@ -230,7 +247,7 @@ export function AppShell() {
                 />
               </div>
             </div>
-            <div className="flex flex-1 items-center justify-end gap-2 md:flex-initial">
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-2 md:flex-initial">
               <button
                 type="button"
                 className="rounded-alt border border-alt-border px-3 py-1 text-xs font-medium text-alt-text hover:border-alt-primary"
@@ -243,7 +260,6 @@ export function AppShell() {
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}
               </button>
-              <span className="hidden text-xs text-alt-muted sm:inline">v1.0</span>
               <button
                 type="button"
                 className="rounded-alt border border-alt-border px-3 py-1 text-sm text-alt-text hover:border-alt-error hover:text-alt-error"

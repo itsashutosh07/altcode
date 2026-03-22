@@ -28,7 +28,7 @@
 /* ----- Light: Earthy brutalist (PRD §5.2) ----- */
 [data-theme='light'] {
   color-scheme: light;
-  --alt-bg: #f7f4ef;
+  --alt-bg: #f0edd5;
   --alt-surface: #ffffff;
   --alt-surface-elevated: #fafafa;
   --alt-border: #e8e4dc;
@@ -82,46 +82,58 @@
   }
 }
 
-/* Subtle “live” grid for dark (respect reduced motion) */
+/*
+ * WebGL layers: LiveWebGLBackground (ogl). Terminal grid overlay (dark only).
+ */
 .live-bg {
   position: relative;
   isolation: isolate;
 }
 
-.live-bg::before {
-  content: '';
+.live-webgl-host {
   position: fixed;
   inset: 0;
   z-index: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  opacity: 0.35;
+}
+
+.live-bg-terminal-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.32;
   background-image: repeating-linear-gradient(
       0deg,
       transparent,
       transparent 24px,
-      rgba(0, 255, 65, 0.04) 24px,
-      rgba(0, 255, 65, 0.04) 25px
+      rgba(0, 255, 65, 0.045) 24px,
+      rgba(0, 255, 65, 0.045) 25px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
       transparent 24px,
-      rgba(0, 255, 65, 0.03) 24px,
-      rgba(0, 255, 65, 0.03) 25px
+      rgba(0, 255, 65, 0.035) 24px,
+      rgba(0, 255, 65, 0.035) 25px
     );
 }
 
-[data-theme='light'] .live-bg::before {
-  display: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  [data-theme='dark'] .live-bg::before {
-    animation: alt-live-drift 24s linear infinite;
+  .live-bg-terminal-grid {
+    animation: alt-grid-drift 36s linear infinite;
   }
 }
 
-@keyframes alt-live-drift {
+@media (prefers-reduced-motion: reduce) {
+  .live-bg-terminal-grid {
+    animation: none !important;
+  }
+}
+
+@keyframes alt-grid-drift {
   0% {
     transform: translate(0, 0);
   }

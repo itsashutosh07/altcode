@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/app/auth/AuthContext'
 import { ProtectedRoute } from '@/app/auth/ProtectedRoute'
 import { SearchProvider } from '@/app/context/SearchContext'
+import { LiveWebGLBackground } from '@/app/background/LiveWebGLBackground'
 import { ThemeProvider } from '@/app/theme/ThemeContext'
 import { AppShell } from '@/app/layout/AppShell'
 import { AnalyticsPage } from '@/pages/AnalyticsPage'
@@ -20,9 +21,12 @@ import { TopicsPage } from '@/pages/TopicsPage'
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <SearchProvider>
-          <Routes>
+      <div className="live-bg min-h-dvh w-full">
+        <LiveWebGLBackground />
+        <div className="relative z-10 min-h-dvh w-full">
+        <AuthProvider>
+          <SearchProvider>
+            <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/login/verify" element={<OtpPage />} />
@@ -41,9 +45,11 @@ export default function App() {
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </SearchProvider>
-      </AuthProvider>
+            </Routes>
+          </SearchProvider>
+        </AuthProvider>
+        </div>
+      </div>
     </ThemeProvider>
   )
 }

@@ -37,7 +37,7 @@ export function OtpPage() {
   }
 
   return (
-    <div className="live-bg flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-dvh items-center justify-center px-4">
       <div
         className={cn(
           'relative z-10 w-full max-w-md border bg-alt-surface p-8 rounded-alt',

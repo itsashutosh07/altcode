@@ -14,8 +14,8 @@ export function LandingPage() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="live-bg min-h-screen">
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-6 py-16">
+    <div className="min-h-dvh">
+      <div className="relative z-10 flex min-h-dvh items-center justify-center px-6 py-16">
         <div
           className={cn(
             'w-full max-w-xl border bg-alt-surface p-10 rounded-alt',
