@@ -12,8 +12,8 @@ export function AltCodeLogo({ theme, className }: AltCodeLogoProps) {
 
   const backFill = isDark ? "#bbf7d0" : "#fcefe9";
   const backStroke = isDark ? "#86efac" : "#e8c9be";
-  const midFill = isDark ? "#14532d" : "#3f6f50";
-  const midStroke = isDark ? "#22c55e" : "#c45c3e";
+  const midFill = isDark ? "#14532d" : "#c9a88f";
+  const midStroke = isDark ? "#22c55e" : "#b45309";
   const frontFill = isDark ? "#000000" : "#1c1917";
   const frontStroke = isDark ? "#22c55e" : "#c45c3e";
   const topBar = isDark ? "#0a0a0a" : "#292524";
