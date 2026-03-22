@@ -1,0 +1,23 @@
+{
+  "retentionPercent": 87.4,
+  "cardsDueToday": 62,
+  "streakDays": 14,
+  "forecast": [
+    { "date": "Mon", "count": 20 },
+    { "date": "Tue", "count": 35 },
+    { "date": "Wed", "count": 28 },
+    { "date": "Thu", "count": 40 },
+    { "date": "Fri", "count": 15 },
+    { "date": "Sat", "count": 10 },
+    { "date": "Sun", "count": 8 }
+  ],
+  "heatmap": [
+    { "day": "M", "intensity": 2 },
+    { "day": "T", "intensity": 3 },
+    { "day": "W", "intensity": 1 },
+    { "day": "T", "intensity": 4 },
+    { "day": "F", "intensity": 2 },
+    { "day": "S", "intensity": 0 },
+    { "day": "S", "intensity": 1 }
+  ]
+}

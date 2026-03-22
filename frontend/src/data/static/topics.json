@@ -1,0 +1,31 @@
+{
+  "topics": [
+    {
+      "id": "algorithms",
+      "title": "Algorithms",
+      "category": "Core CS",
+      "description": "Big-O, sorting, searching, and classic patterns.",
+      "deckId": "deck-algo",
+      "cardCount": 40,
+      "quizCount": 2
+    },
+    {
+      "id": "system-design",
+      "title": "System Design",
+      "category": "Architecture",
+      "description": "Scaling, storage, caching, and tradeoffs.",
+      "deckId": "deck-sd",
+      "cardCount": 42,
+      "quizCount": 3
+    },
+    {
+      "id": "react-internals",
+      "title": "React Internals",
+      "category": "Frontend",
+      "description": "Fiber, hooks, concurrent features.",
+      "deckId": "deck-react",
+      "cardCount": 28,
+      "quizCount": 1
+    }
+  ]
+}

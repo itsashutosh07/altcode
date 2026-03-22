@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "topicIds": ["algorithms"],
+      "prompt": "Which structure is best for O(1) average insert, delete, and lookup by key?",
+      "options": ["Array", "Hash map", "Binary search tree", "Linked list"],
+      "correctIndex": 1
+    },
+    {
+      "id": "q2",
+      "topicIds": ["algorithms"],
+      "prompt": "Merge sort average time complexity?",
+      "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+      "correctIndex": 1
+    },
+    {
+      "id": "q3",
+      "topicIds": ["system-design"],
+      "prompt": "Which pattern reduces hot-key pressure on a single cache node?",
+      "options": ["Strong consistency", "Sharding / consistent hashing", "Single-threaded writes", "Full table scans"],
+      "correctIndex": 1
+    },
+    {
+      "id": "q4",
+      "topicIds": ["system-design"],
+      "prompt": "Why use a message queue between services?",
+      "options": [
+        "To remove the need for databases",
+        "Decouple producers/consumers, buffer load, improve resilience",
+        "To guarantee synchronous delivery only",
+        "To store primary data forever"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "id": "q5",
+      "topicIds": ["react-internals"],
+      "prompt": "What triggers a re-render in React function components?",
+      "options": [
+        "Only prop changes",
+        "State updates in that component or parents supplying new props/context",
+        "DOM events only",
+        "setInterval only"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "id": "q6",
+      "topicIds": ["react-internals"],
+      "prompt": "useMemo is primarily for:",
+      "options": [
+        "Side effects",
+        "Skipping expensive recalculations when deps unchanged",
+        "Fetching data",
+        "Replacing useState"
+      ],
+      "correctIndex": 1
+    }
+  ]
+}

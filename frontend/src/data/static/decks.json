@@ -1,0 +1,25 @@
+{
+  "decks": [
+    {
+      "id": "deck-algo",
+      "title": "Algorithms",
+      "topicId": "algorithms",
+      "dueCount": 12,
+      "masteryPercent": 58
+    },
+    {
+      "id": "deck-sd",
+      "title": "System Design",
+      "topicId": "system-design",
+      "dueCount": 42,
+      "masteryPercent": 67
+    },
+    {
+      "id": "deck-react",
+      "title": "React Internals",
+      "topicId": "react-internals",
+      "dueCount": 8,
+      "masteryPercent": 41
+    }
+  ]
+}

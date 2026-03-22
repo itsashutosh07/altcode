@@ -1,0 +1,48 @@
+{
+  "deck-algo": [
+    {
+      "id": "ca1",
+      "front": "What is the time complexity of binary search on a sorted array?",
+      "back": "O(log n) — each step halves the search space."
+    },
+    {
+      "id": "ca2",
+      "front": "When does Quicksort degrade to O(n²)?",
+      "back": "Poor pivot choices on already sorted or adversarial inputs; mitigated by random pivot or introsort."
+    },
+    {
+      "id": "ca3",
+      "front": "What data structure backs a LRU cache?",
+      "back": "Hash map for O(1) lookup + doubly linked list for O(1) eviction order (or ordered map in some languages)."
+    }
+  ],
+  "deck-sd": [
+    {
+      "id": "cs1",
+      "front": "State the CAP theorem in one line.",
+      "back": "Under network partition, you cannot have both strong consistency and full availability; you must choose a tradeoff."
+    },
+    {
+      "id": "cs2",
+      "front": "Name two reasons to add a cache in front of a database.",
+      "back": "Lower read latency, reduce DB load, absorb traffic spikes (with cache invalidation/consistency tradeoffs)."
+    },
+    {
+      "id": "cs3",
+      "front": "What is idempotency for HTTP APIs?",
+      "back": "Repeating the same request has the same effect as doing it once — critical for retries and payments."
+    }
+  ],
+  "deck-react": [
+    {
+      "id": "cr1",
+      "front": "What problem does the Fiber architecture solve?",
+      "back": "Incremental rendering: pause, resume, and prioritize updates so the main thread stays responsive."
+    },
+    {
+      "id": "cr2",
+      "front": "Why should hook order not change between renders?",
+      "back": "React relies on call order to associate state with hooks; conditional hooks break that mapping."
+    }
+  ]
+}
