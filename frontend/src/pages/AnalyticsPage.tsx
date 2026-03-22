@@ -314,7 +314,7 @@ export function AnalyticsPage() {
 
         <div
           className={cn(
-            'flex min-h-[400px] flex-col border border-alt-border bg-alt-surface p-5',
+            'flex flex-col border border-alt-border bg-alt-surface p-5',
             !isDark && 'rounded-alt shadow-brutal',
           )}
         >
@@ -344,8 +344,8 @@ export function AnalyticsPage() {
               <span>More</span>
             </div>
           </div>
-          <div className="min-h-0 flex-1 overflow-x-auto pb-2">
-            <div className="flex min-w-[640px] flex-col">
+          <div className="overflow-x-auto pb-2">
+            <div className="flex min-w-[640px] shrink-0 flex-col">
               <div className="mb-2 ml-6 flex justify-between pr-2 font-mono text-[10px] text-alt-muted">
                 {Array.from({ length: Math.ceil(weekCount / 4) }, (_, i) => (
                   <span key={i}>M{i + 1}</span>
@@ -419,17 +419,32 @@ export function AnalyticsPage() {
         >
           Week overview (static)
         </h3>
-        <div className="flex h-28 items-end gap-2">
-          {s.forecast.map((f) => (
-            <div key={f.date} className="flex flex-1 flex-col items-center gap-1">
-              <div
-                className="w-full rounded-t bg-alt-primary/70"
-                style={{ height: `${Math.min(100, f.count * 2)}px` }}
-                title={`${f.date}: ${f.count}`}
-              />
-              <span className="font-mono text-[10px] text-alt-muted">{f.date}</span>
-            </div>
-          ))}
+        <div className="rounded-alt border border-alt-border/60 bg-alt-border/20 p-2 dark:border-alt-border dark:bg-alt-border/25">
+          <div className="flex h-28 items-end gap-1.5 sm:gap-2">
+            {s.forecast.map((f) => {
+              const h = Math.min(88, Math.max(4, f.count * 2))
+              return (
+                <div
+                  key={f.date}
+                  className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-end gap-1.5"
+                >
+                  <div
+                    className={cn(
+                      'w-full min-h-1 shrink-0 rounded-t-sm',
+                      isDark
+                        ? 'bg-alt-primary shadow-[inset_0_-1px_0_0_rgba(0,0,0,0.35)]'
+                        : 'bg-alt-primary shadow-sm ring-1 ring-inset ring-black/10',
+                    )}
+                    style={{ height: `${h}px` }}
+                    title={`${f.date}: ${f.count}`}
+                  />
+                  <span className="font-mono text-[10px] font-medium text-alt-text sm:text-xs">
+                    {f.date}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </section>
 
