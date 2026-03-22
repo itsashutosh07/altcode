@@ -268,4 +268,21 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
+
+  /* App home hero — light wash vs page bg; uses theme tokens */
+  [data-theme='dark'] .app-home-hero {
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--alt-surface) 96%, var(--alt-primary) 4%) 0%,
+      color-mix(in srgb, var(--alt-surface) 90%, var(--alt-primary) 10%) 100%
+    );
+  }
+
+  [data-theme='light'] .app-home-hero {
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--alt-surface) 97%, var(--alt-bg) 3%) 0%,
+      color-mix(in srgb, var(--alt-surface) 94%, var(--alt-primary) 6%) 100%
+    );
+  }
 }

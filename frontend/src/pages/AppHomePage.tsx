@@ -55,8 +55,8 @@ export function AppHomePage() {
     <div className="mx-auto max-w-3xl space-y-12 px-1 pb-16 pt-2 md:pt-4">
       <section
         className={cn(
-          "rounded-alt border p-8 md:p-10",
-          "border-alt-border/80 bg-alt-surface/80",
+          "app-home-hero rounded-alt border p-8 md:p-10",
+          "border-alt-border/80",
           theme === "light" && "shadow-brutal",
           theme === "dark" &&
             "border-alt-border shadow-[0_0_48px_-12px_rgba(0,255,65,0.08)]",
